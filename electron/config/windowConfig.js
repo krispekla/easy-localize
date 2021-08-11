@@ -1,12 +1,12 @@
 module.exports = {
   overview: {
     title: "Easy localize - Overview",
-    width: 800,
-    minWidth: 800,
-    maxWidth: 800,
-    height: 500,
-    minHeight: 500,
-    maxHeight: 500,
+    width: 880,
+    minWidth: 880,
+    maxWidth: 880,
+    height: 600,
+    minHeight: 600,
+    maxHeight: 600,
     animation: true,
     center: true,
   },

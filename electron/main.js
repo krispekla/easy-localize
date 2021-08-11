@@ -25,15 +25,12 @@ function createWindow(url) {
 app.whenReady().then(async () => {
   createWindow("http://localhost:3000/overview");
 
-  mainWindow.webContents.once("dom-ready", async () => {
-    await installExtension([REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS])
-      .then((name) => console.log(`Added Extension: ${name}`))
-      .catch((err) => console.log("An error occurred: ", err))
-      .finally(() => {
-        require("electron-debug")();
-        mainWindow.webContents.openDevTools({ mode: "detach" });
-      });
-  });
+  await installExtension([REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS])
+    .then((name) => console.log(`Added Extension: ${name}`))
+    .catch((err) => console.log("An error occurred: ", err))
+    .finally(() => {
+      mainWindow.webContents.openDevTools({ mode: "detach" });
+    });
 });
 
 app.on("window-all-closed", function () {

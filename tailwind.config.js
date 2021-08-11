@@ -1,11 +1,16 @@
 module.exports = {
   purge: [],
-  darkMode: false, // or 'media' or 'class'
+  darkMode: 'class', // or 'media' or 'class'
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        sanJuan: "#2B5876",
+        eastBay: "#4E4376",
+      },
+    },
   },
   variants: {
     extend: {},
   },
   plugins: [],
-}
+};
