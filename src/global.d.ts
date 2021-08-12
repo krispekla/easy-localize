@@ -1,3 +1,3 @@
 declare interface Window {
-  electron: any;
+	electron: any;
 }
