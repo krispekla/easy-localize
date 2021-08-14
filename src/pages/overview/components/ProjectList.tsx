@@ -1,17 +1,19 @@
 import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { ContextMenu } from 'primereact/contextmenu';
 import { ProjectInterface } from '../../../redux/slices/projectSlice';
+import { HashRouter, withRouter } from 'react-router-dom';
 
-function ProjectList(props: { projects: Array<ProjectInterface> }) {
+
+function ProjectList ({ history, projects }: any | HashRouter) {
 	const contextMenuRef = useRef() as MutableRefObject<ContextMenu>;
-	const [currentItem, setCurrentItem] = useState(null);
+	const [, setCurrentItem] = useState(null);
 
 	useEffect(() => {
 		window.electron.on('resize-window-return', (event: any, args: any) => {
 			console.log(args);
 		});
 		return () => {
-			window.electron.removeAllListeners('directory-path"');
+			window.electron.removeAllListeners('resize-window-return');
 		};
 	}, []);
 
@@ -21,6 +23,7 @@ function ProjectList(props: { projects: Array<ProjectInterface> }) {
 		if (window.electron) {
 			window.electron.send('window-open-editor', 'editor');
 		}
+		history.push('/editor');
 	}
 
 	const contextMenuItems = [
@@ -58,7 +61,7 @@ function ProjectList(props: { projects: Array<ProjectInterface> }) {
 			</div>
 			<hr className="bg-blue-200 h-1 border-0 mt-2 mb-3" />
 
-			{props.projects.map((project: ProjectInterface, key: number) => {
+			{projects.map((project: ProjectInterface, key: number) => {
 				return (
 					<React.Fragment key={key}>
 						<ContextMenu
@@ -81,4 +84,4 @@ function ProjectList(props: { projects: Array<ProjectInterface> }) {
 	);
 }
 
-export default ProjectList;
+export default withRouter(ProjectList);

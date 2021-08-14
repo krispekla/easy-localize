@@ -1,4 +1,4 @@
-module.exports = {
+const windowConfig: any = {
 	overview: {
 		title: 'Easy localize - Overview',
 		width: 880,
@@ -21,3 +21,5 @@ module.exports = {
 		animation: true,
 	},
 };
+
+export default windowConfig

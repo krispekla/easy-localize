@@ -1,10 +1,10 @@
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
+import { useAppDispatch } from '../../redux/hooks';
 import { increment, ProjectInterface } from '../../redux/slices/projectSlice';
 import ProjectList from './components/ProjectList';
 import './Overview.scss';
 
 function Overview() {
-	const da = useAppSelector((state) => state.overview.projects);
+	// const da = useAppSelector((state) => state.overview.projects);
 	const dispatch = useAppDispatch();
 
 	const mockedProjects: Array<ProjectInterface> = [

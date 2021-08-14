@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
+import { HashRouterProps, withRouter } from 'react-router-dom';
 
-function Editor() {
+function Editor({ history }: any | HashRouterProps){
 	useEffect(() => {
 		window.electron.on('resize-window-return', (event: any, args: any) => {
 			console.log(args);
 		});
 		return () => {
-			window.electron.removeAllListeners('directory-path"');
+			window.electron.removeAllListeners('resize-window-return');
 		};
 	}, []);
 
@@ -16,6 +17,7 @@ function Editor() {
 		if (window.electron) {
 			window.electron.send('window-open-editor', 'overview');
 		}
+		history.push('/overview');
 	}
 
 	return (
@@ -28,4 +30,4 @@ function Editor() {
 	);
 }
 
-export default Editor;
+export default withRouter(Editor);
