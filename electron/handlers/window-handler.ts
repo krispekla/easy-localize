@@ -1,6 +1,6 @@
-import windowConfig from '../config/windowConfig';
 import { BrowserWindow } from 'electron';
 import { ipcMain } from '../main';
+import windowConfig from '../config/windowConfig';
 
 function setWindow({ sender }: Electron.IpcMainEvent, config: string | number) {
     let browserWindow = BrowserWindow.fromWebContents(sender);

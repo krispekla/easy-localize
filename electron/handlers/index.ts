@@ -1,3 +1,3 @@
-export * from './file-handler'
 export * from './window-handler'
+export * from './settings-handler'
 

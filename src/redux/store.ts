@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import projectReducer from './slices/projectSlice';
+import settingsReducer from './slices/settingsSlice';
 
 const store = configureStore({
 	reducer: {
-		overview: projectReducer,
+		settings: settingsReducer,
 	},
 });
 

@@ -6,7 +6,7 @@ import * as url from 'url';
 
 let mainWindow: BrowserWindow | null;
 
-export { ipcMain }
+export { ipcMain, app }
 const isDevelopment = process.env.NODE_ENV === 'development'
 
 function createWindow() {

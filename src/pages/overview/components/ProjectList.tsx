@@ -1,12 +1,15 @@
 import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { ContextMenu } from 'primereact/contextmenu';
-import { ProjectInterface } from '../../../redux/slices/projectSlice';
 import { HashRouter, withRouter } from 'react-router-dom';
+import { Project } from '../../../core/interfaces/ProjectInterface';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { changeProjectFolder, removeProject, renameProject } from '../../../redux/slices/settingsSlice';
 
-
-function ProjectList ({ history, projects }: any | HashRouter) {
+function ProjectList({ history }: any | HashRouter) {
 	const contextMenuRef = useRef() as MutableRefObject<ContextMenu>;
-	const [, setCurrentItem] = useState(null);
+	const [currentItem, setCurrentItem] = useState(-1);
+	const projects = useAppSelector((state) => state.settings.projects);
+	const dispatch = useAppDispatch();
 
 	useEffect(() => {
 		window.electron.on('resize-window-return', (event: any, args: any) => {
@@ -41,16 +44,24 @@ function ProjectList ({ history, projects }: any | HashRouter) {
 		},
 	];
 
-	function onProjectRename(e: any) {}
-	function onProjectChangeFolder(e: any) {}
-	function onProjectRemove(e: any) {}
+	function onProjectRename(e: any) {
+		if (currentItem) dispatch(renameProject({ index: currentItem, newName: 'rename' }));
+	}
+
+	function onProjectChangeFolder(e: any) {
+		if (currentItem) dispatch(changeProjectFolder({ index: currentItem, newSrc: 'newSrc' }));
+	}
+
+	function onProjectRemove(e: any) {
+		if (currentItem) dispatch(removeProject(currentItem));
+	}
 
 	function onItemContextMenuClickShow(e: any, index: any) {
 		setCurrentItem(index);
 	}
 
 	function onItemContextMenuClickHide(e: any) {
-		setCurrentItem(null);
+		setCurrentItem(-1);
 	}
 
 	return (
@@ -61,7 +72,7 @@ function ProjectList ({ history, projects }: any | HashRouter) {
 			</div>
 			<hr className="bg-blue-200 h-1 border-0 mt-2 mb-3" />
 
-			{projects.map((project: ProjectInterface, key: number) => {
+			{projects.map((project: Project, key: number) => {
 				return (
 					<React.Fragment key={key}>
 						<ContextMenu
