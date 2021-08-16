@@ -1,5 +1,5 @@
 import { dialog } from 'electron';
-import { readAppSettings, writeAppSettings } from 'util/file-helper';
+import { readAppSettings, writeAppSettings } from '../util/file-helper';
 import { ipcMain } from '../main';
 
 export interface ProjectInterface {

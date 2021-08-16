@@ -24,7 +24,7 @@ const settingsSlice = createSlice({
             state.projects.splice(action.payload, 1);
         },
         loadSettings(state, action: PayloadAction<Settings>) {
-            state = action.payload;
+            state.projects = action.payload.projects;
         },
     },
 });

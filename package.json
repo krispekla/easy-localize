@@ -7,11 +7,10 @@
   "description": "Electron application for developers, using translations in frontend projects",
   "homepage": ".",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development nf start -p 3000",
-    "test": "react-scripts test",
+    "dev": "concurrently \"cross-env NODE_ENV=development BROWSER=none yarn react-start\" \"wait-on http://localhost:3000 && npm run electron-watch\"",
     "electron-build": "tsc --project electron/tsconfig.json",
-    "electron-start": "ts-node --skip-project electron/connect-electron.ts",
-    "electron-watch": "tsc --watch --project electron/tsconfig.json",
+    "electron-start": "nodemon --watch 'build/electron'  --exec 'electron .' --inspect=5858",
+    "electron-watch": "tsc-watch --project electron/tsconfig.json --onSuccess \"cross-env NODE_ENV=development npm run electron-start\"",
     "react-start": "cross-env BROWSER=none craco start",
     "react-build": "craco build",
     "react-test": "craco test",
@@ -98,16 +97,18 @@
   },
   "devDependencies": {
     "autoprefixer": "^9.8.6",
+    "concurrently": "^6.2.1",
     "cross-env": "^7.0.3",
     "electron": "^13.1.8",
     "electron-builder": "^22.11.7",
     "electron-debug": "^3.2.0",
     "electron-devtools-installer": "git+https://github.com/MarshallOfSound/electron-devtools-installer.git",
-    "foreman": "^3.0.1",
     "nodemon": "^2.0.12",
     "postcss": "^7.0.36",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.7",
     "ts-node": "^10.2.0",
-    "typescript": "^4.1.2"
+    "tsc-watch": "^4.4.0",
+    "typescript": "^4.1.2",
+    "wait-on": "^6.0.0"
   }
 }

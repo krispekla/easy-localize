@@ -1,6 +1,6 @@
 import * as fs from 'fs'
-import { Settings } from 'handlers/settings-handler'
-import { app } from 'main'
+import { Settings } from '../handlers/settings-handler'
+import { app } from '../main'
 let APP_CONFIG_ROOT_PATH_CONFIG: string
 
 function checkIfConfigFileExists() {

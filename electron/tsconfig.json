@@ -3,19 +3,15 @@
     "module": "commonjs",
     "target": "es6",
     "noImplicitAny": true,
-    "inlineSourceMap":true,
+    "inlineSourceMap": true,
     "inlineSources": true,
     "outDir": "../build/electron",
-    "baseUrl": "."
+    "baseUrl": ".",
   },
   "include": [
     "./**/*",
-    "../src/types"
   ],
   "exclude": [
     "node_modules"
   ],
-  "files": [
-    "./global.d.ts"
-  ]
 }

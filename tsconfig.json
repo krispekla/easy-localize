@@ -28,6 +28,7 @@
   "exclude": [
     "node_modules",
     "build",
+    "electron",
     "scripts",
     "acceptance-tests",
     "webpack",
