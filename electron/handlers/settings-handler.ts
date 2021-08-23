@@ -18,17 +18,17 @@ function loadSettings(event: Electron.IpcMainEvent, args: any[]) {
 }
 
 
-async function loadDirectory(event: Electron.IpcMainEvent, args: any[]) {
+async function directoryDialog(event: Electron.IpcMainEvent, args: any[]) {
     const folderPathResult = await dialog.showOpenDialog({
         properties: ['openDirectory'],
     });
 
     event.sender.send(
-        'directory-path',
-        folderPathResult.canceled ? 'canceled' : folderPathResult.filePaths[0]
+        'directory-dialog-return',
+        folderPathResult.canceled ? 'canceled' : { source: folderPathResult.filePaths[0], type: args }
     );
 }
 
 export const writeSettingsListener = ipcMain.on('settings-save', writeAppSettings)
 export const readSettingsListener = ipcMain.on('settings-load', loadSettings)
-export const fileHandler = ipcMain.on('directory-load', loadDirectory)
+export const fileHandler = ipcMain.on('directory-dialog', directoryDialog)

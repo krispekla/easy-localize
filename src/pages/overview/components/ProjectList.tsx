@@ -3,7 +3,13 @@ import { ContextMenu } from 'primereact/contextmenu';
 import { HashRouter, withRouter } from 'react-router-dom';
 import { Project } from '../../../core/interfaces/ProjectInterface';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { changeProjectFolder, removeProject, renameProject } from '../../../redux/slices/settingsSlice';
+import {
+	changeProjectFolder,
+	removeProject,
+	renameProject,
+} from '../../../redux/slices/settingsSlice';
+import ProjectDialog from '../../../core/components/ProjectDialog';
+import ProjectDialogEnum from '../../../core/enums/ProjectDialogEnum';
 
 function ProjectList({ history }: any | HashRouter) {
 	const contextMenuRef = useRef() as MutableRefObject<ContextMenu>;
@@ -66,6 +72,8 @@ function ProjectList({ history }: any | HashRouter) {
 
 	return (
 		<>
+			<ProjectDialog project={projects[currentItem]} type={ProjectDialogEnum.add} />
+
 			<div className="flex flex-row mt-5 dark:text-white">
 				<span className="w-5/12 pl-2">Name</span>
 				<span className="w-7/12 ">Folder</span>
