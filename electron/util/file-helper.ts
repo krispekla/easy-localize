@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import { Settings } from '../handlers/settings-handler'
+import { Settings } from 'types/interfaces/SettingsInterface'
 import { app } from '../main'
 let APP_CONFIG_ROOT_PATH_CONFIG: string
 

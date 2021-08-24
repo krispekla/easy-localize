@@ -11,6 +11,9 @@ import { Language } from '../interfaces/LanguageInterface';
 import { Fieldset } from 'primereact/fieldset';
 import ProjectType from '../enums/ProjectType';
 import { cloneDeep } from 'lodash';
+import { addProject } from '../../redux/slices/settingsSlice';
+import { useAppDispatch } from '../../redux/hooks';
+
 export interface ProjectDialogInterface {
 	project: Project;
 	type: ProjectDialogEnum;
@@ -18,7 +21,6 @@ export interface ProjectDialogInterface {
 
 const ProjectDialog = (props: ProjectDialogInterface) => {
 	const [displayDialog, setDisplayDialog] = useState(false);
-	const [project, setProject] = useState(props.project);
 	const [filteredLanguages, setFilteredLanguages] = useState<Language[]>([]);
 	const [languageDropdown, setLanguageDropdown] = useState<Language | any>(null);
 
@@ -40,12 +42,16 @@ const ProjectDialog = (props: ProjectDialogInterface) => {
 		watch,
 		setValue,
 		getValues,
+		trigger,
 		formState: { errors },
 		control,
 	} = useForm<Project>({
 		defaultValues: { ...formDefaultValues },
 	});
 
+	const dispatch = useAppDispatch();
+	const watchProjectSource = watch('src');
+	const watchTranslationFolderSource = watch('translationFolder');
 	const watchLanguages = watch('languages');
 	const watchDefaultLanguages = watch('defaultLanguage');
 
@@ -57,20 +63,16 @@ const ProjectDialog = (props: ProjectDialogInterface) => {
 		window.electron.on('directory-dialog-return', (event: any, args: any) => {
 			if (args === 'canceled') return;
 
-			if (project) {
-				args.type === 'source'
-					? setProject((prevState) => ({ ...prevState, src: args.source }))
-					: setProject((prevState) => ({ ...prevState, translationFolder: args.source }));
-			} else {
-				args.type === 'source'
-					? setProject((prevState) => ({ ...prevState, src: args.source }))
-					: setProject((prevState) => ({ ...prevState, translationFolder: args.source }));
-			}
+			args.type === 'source'
+				? setValue('src', args.source)
+				: setValue('translationFolder', args.source);
+
+			trigger(['src', 'translationFolder']);
 		});
 		return () => {
 			window.electron.removeAllListeners('directory-dialog-return');
 		};
-	}, [project]);
+	}, [setValue, trigger]);
 
 	function onLanguageChange(e: DropdownChangeParams) {
 		setLanguageDropdown(e.value);
@@ -88,6 +90,7 @@ const ProjectDialog = (props: ProjectDialogInterface) => {
 			)
 		);
 		setLanguageDropdown(null);
+		trigger(['languages', 'defaultLanguage']);
 	}
 
 	function onRemoveLanguageClick(language: Language) {
@@ -98,15 +101,17 @@ const ProjectDialog = (props: ProjectDialogInterface) => {
 			'languages',
 			languageList.filter((x) => x !== language)
 		);
+
 		if (watchDefaultLanguages === language) {
-			const newDefaultLanguage =
-				getValues('languages').length > 0 ? getValues('languages')[0] : ({} as Language);
-			setValue('defaultLanguage', newDefaultLanguage);
+			getValues('languages').length > 0
+				? setValue('defaultLanguage', getValues('languages')[0])
+				: setValue('defaultLanguage', undefined);
 		}
-		setLanguageDropdown({});
+		setLanguageDropdown(null);
+		trigger(['languages', 'defaultLanguage']);
 	}
 
-	function onAddNewButtonClick() {
+	function onAddNewProjectButtonClick() {
 		setDisplayDialog(true);
 	}
 
@@ -133,7 +138,9 @@ const ProjectDialog = (props: ProjectDialogInterface) => {
 		setDisplayDialog(false);
 	};
 
-	const onConfirmDialog = () => {
+	const onConfirmDialog = (data: any) => {
+		console.log('da', data);
+		dispatch(addProject(data));
 		setDisplayDialog(false);
 	};
 
@@ -146,10 +153,10 @@ const ProjectDialog = (props: ProjectDialogInterface) => {
 					Cancel
 				</button>
 				<button
-					onClick={() => onConfirmDialog()}
-					disabled={true}
+					onClick={handleSubmit(onConfirmDialog)}
+					disabled={false}
 					className={`px-4 py-2  text-white rounded-md shadow-md hover:shadow-sm ${
-						true ? 'bg-indigo-400' : 'bg-indigo-700 hover:bg-indigo-600'
+						false ? 'bg-indigo-400' : 'bg-indigo-700 hover:bg-indigo-600'
 					}`}>
 					Add
 				</button>
@@ -160,7 +167,7 @@ const ProjectDialog = (props: ProjectDialogInterface) => {
 	return (
 		<>
 			<button
-				onClick={onAddNewButtonClick}
+				onClick={onAddNewProjectButtonClick}
 				className="px-4 py-2 bg-indigo-700 dark:text-white hover:bg-indigo-600 rounded-md shadow-md hover:shadow-lg">
 				{props.type === ProjectDialogEnum.add ? 'Add new project' : 'Project settings'}
 			</button>
@@ -174,7 +181,23 @@ const ProjectDialog = (props: ProjectDialogInterface) => {
 				<div className="flex d-col">
 					<div className="flex flex-col">
 						<label htmlFor="projectName">Name:</label>
-						<InputText className="mr-3 w-72 h-10 my-2" id="projectName" value={project?.name} />
+						<Controller
+							name="name"
+							control={control}
+							rules={{ required: 'Project name is required.' }}
+							render={({ field, fieldState }) => (
+								<InputText
+									id={field.name}
+									{...field}
+									autoFocus
+									value={field.value}
+									className={`mr-3 w-72 h-10 my-2 ${
+										fieldState.invalid && fieldState.isTouched && 'border-red-400'
+									}`}
+								/>
+							)}
+						/>
+						{errors['name'] && <small className="p-error">{errors['name'].message}</small>}
 					</div>
 					<div className="flex flex-col mx-3">
 						<label htmlFor="folderSrc font-weight-bold">Type</label>
@@ -198,6 +221,9 @@ const ProjectDialog = (props: ProjectDialogInterface) => {
 									/>
 								)}
 							/>
+							{errors['projectType'] && (
+								<small className="p-error">{errors['projectType'].message}</small>
+							)}
 						</div>
 					</div>
 					<div className="flex flex-col">
@@ -221,27 +247,54 @@ const ProjectDialog = (props: ProjectDialogInterface) => {
 				<div className="flex flex-col">
 					<label htmlFor="folderSrc">Source folder:</label>
 					<div className="flex items-center mt-2">
-						<span className="mx-3 font-semibold">{project?.src}</span>
+						<span
+							{...register('src', { required: 'Project folder is required' })}
+							className={`${watchProjectSource && 'mx-3'} font-semibold`}>
+							{watchProjectSource}
+						</span>
+
 						<button
 							onClick={onSourceFolderButtonClick}
 							className="px-4 py-2 bg-blue-500 text-white hover:bg-blue-400 rounded-md shadow-md hover:shadow-sm ">
-							{props.type === ProjectDialogEnum.add && !project ? 'Add' : 'Update'} source folder
+							{props.type === ProjectDialogEnum.add && !watchProjectSource ? 'Add' : 'Update'}{' '}
+							source folder
 						</button>
 					</div>
+					{errors['src'] && <small className="p-error">{errors['src'].message}</small>}
 				</div>
 				<div className="flex flex-col mt-5">
 					<label htmlFor="folderSrc">Translations folder:</label>
 					<div className="flex items-center mt-2">
-						<span className="mx-3 font-semibold">{project?.translationFolder}</span>
+						<span
+							{...register('translationFolder', {
+								required: 'Translation folder is required',
+							})}
+							className={`${watchTranslationFolderSource && 'mx-3'} font-semibold`}>
+							{watchTranslationFolderSource}
+						</span>
+
 						<button
 							onClick={onTranslationsFolderButtonClick}
 							className="px-4 py-2 bg-blue-500 text-white hover:bg-blue-400 rounded-md shadow-md hover:shadow-sm ">
-							{props.type === ProjectDialogEnum.add && !project ? 'Add' : 'Update'} translation
-							folder
+							{props.type === ProjectDialogEnum.add && !watchTranslationFolderSource
+								? 'Add'
+								: 'Update'}{' '}
+							translation folder
 						</button>
 					</div>
+					{errors['translationFolder'] && (
+						<small className="p-error">{errors['translationFolder'].message}</small>
+					)}
 				</div>
-				<Fieldset className="mt-5" legend="Languages">
+				<Fieldset
+					{...register('languages', {
+						required: 'Setting languages is required',
+					})}
+					{...register('defaultLanguage', {
+						required: 'Setting default languages is required',
+					})}
+					className="mt-5"
+					legend="Languages">
 					{watchLanguages.length > 0 && (
 						<>
 							<div className="flex items-center min-w-max px-2">
@@ -275,7 +328,14 @@ const ProjectDialog = (props: ProjectDialogInterface) => {
 								</div>
 							);
 						})}
-
+					<div className="flex flex-col">
+						{errors['languages'] && (
+							<small className="p-error">Setting languages is required</small>
+						)}
+						{errors['defaultLanguage'] && (
+							<small className="p-error">Setting default language is required</small>
+						)}
+					</div>
 					<hr className="mt-5 mb-2 border-2 border-gray-200" />
 					<div className="font-semibold">Add new language</div>
 					<div className="flex mt-2">
