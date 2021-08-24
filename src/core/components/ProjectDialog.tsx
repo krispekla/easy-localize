@@ -11,21 +11,25 @@ import { Language } from '../interfaces/LanguageInterface';
 import { Fieldset } from 'primereact/fieldset';
 import ProjectType from '../enums/ProjectType';
 import { cloneDeep } from 'lodash';
-import { addProject } from '../../redux/slices/settingsSlice';
+import { addProject, updateProject } from '../../redux/slices/settingsSlice';
 import { useAppDispatch } from '../../redux/hooks';
 
 export interface ProjectDialogInterface {
-	project: Project;
+	project?: Project;
 	type: ProjectDialogEnum;
+	displayDialog: boolean;
+	setDisplayDialog: any;
+	projectIndex: number;
+	clearDefault: any;
 }
 
 const ProjectDialog = (props: ProjectDialogInterface) => {
-	const [displayDialog, setDisplayDialog] = useState(false);
+	// const [displayDialog, setDisplayDialog] = useState(false);
 	const [filteredLanguages, setFilteredLanguages] = useState<Language[]>([]);
 	const [languageDropdown, setLanguageDropdown] = useState<Language | any>(null);
 
 	let formDefaultValues: Project =
-		props.type === ProjectDialogEnum.edit
+		props.type === ProjectDialogEnum.edit && props.project
 			? cloneDeep<Project>(props.project)
 			: {
 					name: '',
@@ -33,6 +37,7 @@ const ProjectDialog = (props: ProjectDialogInterface) => {
 					isPinned: false,
 					translationFolder: '',
 					languages: [],
+					defaultLanguage: null,
 					projectType: ProjectType[1],
 			  };
 
@@ -45,6 +50,7 @@ const ProjectDialog = (props: ProjectDialogInterface) => {
 		trigger,
 		formState: { errors },
 		control,
+		reset,
 	} = useForm<Project>({
 		defaultValues: { ...formDefaultValues },
 	});
@@ -56,6 +62,10 @@ const ProjectDialog = (props: ProjectDialogInterface) => {
 	const watchDefaultLanguages = watch('defaultLanguage');
 
 	useEffect(() => {}, [watchDefaultLanguages]);
+	useEffect(() => {
+		if (props.project && props.type === ProjectDialogEnum.edit)
+			reset(cloneDeep<Project>(props.project));
+	}, [props.project, props.type, reset]);
 
 	useEffect(() => {
 		setFilteredLanguages(languageCodes.sort((a, b) => (a.language < b.language ? -1 : 1)));
@@ -111,10 +121,6 @@ const ProjectDialog = (props: ProjectDialogInterface) => {
 		trigger(['languages', 'defaultLanguage']);
 	}
 
-	function onAddNewProjectButtonClick() {
-		setDisplayDialog(true);
-	}
-
 	function onSourceFolderButtonClick(e: { preventDefault: () => void }) {
 		e.preventDefault();
 
@@ -130,18 +136,29 @@ const ProjectDialog = (props: ProjectDialogInterface) => {
 		setValue('defaultLanguage', language);
 	}
 
+	function resetState() {
+		reset(cloneDeep(formDefaultValues));
+		setFilteredLanguages(languageCodes.sort((a, b) => (a.language < b.language ? -1 : 1)));
+		setLanguageDropdown(null);
+	}
+
 	const isDefaultLanguageCheckboxCheck = (language: Language): boolean => {
-		return getValues('defaultLanguage') === language;
+		return getValues('defaultLanguage')?.language === language.language;
 	};
 
 	const onHideDialog = () => {
-		setDisplayDialog(false);
+		resetState();
+		props.clearDefault();
+		props.setDisplayDialog(false);
 	};
 
 	const onConfirmDialog = (data: any) => {
-		console.log('da', data);
-		dispatch(addProject(data));
-		setDisplayDialog(false);
+		if (props.type === ProjectDialogEnum.add) dispatch(addProject(data));
+		else if (props.type === ProjectDialogEnum.edit && props.projectIndex)
+			dispatch(updateProject({ project: data, index: props.projectIndex }));
+
+		resetState();
+		props.setDisplayDialog(false);
 	};
 
 	const renderDialogAddNewFooter = () => {
@@ -158,7 +175,7 @@ const ProjectDialog = (props: ProjectDialogInterface) => {
 					className={`px-4 py-2  text-white rounded-md shadow-md hover:shadow-sm ${
 						false ? 'bg-indigo-400' : 'bg-indigo-700 hover:bg-indigo-600'
 					}`}>
-					Add
+					{props.type === ProjectDialogEnum.add ? 'Add new project' : 'Update project'}
 				</button>
 			</div>
 		);
@@ -166,14 +183,9 @@ const ProjectDialog = (props: ProjectDialogInterface) => {
 
 	return (
 		<>
-			<button
-				onClick={onAddNewProjectButtonClick}
-				className="px-4 py-2 bg-indigo-700 dark:text-white hover:bg-indigo-600 rounded-md shadow-md hover:shadow-lg">
-				{props.type === ProjectDialogEnum.add ? 'Add new project' : 'Project settings'}
-			</button>
 			<Dialog
 				header="Add new project"
-				visible={displayDialog}
+				visible={props.displayDialog}
 				style={{ width: '90vw' }}
 				draggable={false}
 				footer={renderDialogAddNewFooter()}

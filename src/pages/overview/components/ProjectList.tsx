@@ -3,17 +3,20 @@ import { ContextMenu } from 'primereact/contextmenu';
 import { HashRouter, withRouter } from 'react-router-dom';
 import { Project } from '../../../core/interfaces/ProjectInterface';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import {
-	changeProjectFolder,
-	removeProject,
-	renameProject,
-} from '../../../redux/slices/settingsSlice';
+import { removeProject, toggleProjectPin } from '../../../redux/slices/settingsSlice';
 import ProjectDialog from '../../../core/components/ProjectDialog';
 import ProjectDialogEnum from '../../../core/enums/ProjectDialogEnum';
-
+import fullPin from '../../../assets/icons/full-pin.svg';
+import emptyPin from '../../../assets/icons/empty-pin.svg';
 function ProjectList({ history }: any | HashRouter) {
 	const contextMenuRef = useRef() as MutableRefObject<ContextMenu>;
-	const [currentItem, setCurrentItem] = useState(-1);
+	const [currentItem, setCurrentItem] = useState<Project>();
+	const [projectDialogType, setProjectDialogType] = useState<ProjectDialogEnum>(
+		ProjectDialogEnum.add
+	);
+	const [displayDialog, setDisplayDialog] = useState(false);
+	const [projectIndex, setProjectIndex] = useState<number>(-1);
+
 	const projects = useAppSelector((state) => state.settings.projects);
 	const dispatch = useAppDispatch();
 
@@ -26,23 +29,25 @@ function ProjectList({ history }: any | HashRouter) {
 		};
 	}, []);
 
-	function onProjectOpen(e: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) {
+	function onProjectOpen(e: any, index?: number) {
 		e.preventDefault();
 
+		const projectId = currentItem ? currentItem : index;
+
 		if (window.electron) {
-			window.electron.send('window-open-editor', 'editor');
+			window.electron.send('window-open-editor', { window: 'editor', projectId });
 		}
 		history.push('/editor');
 	}
 
 	const contextMenuItems = [
 		{
-			label: 'Rename',
-			command: onProjectRename,
+			label: 'Open',
+			command: onProjectOpen,
 		},
 		{
-			label: 'Change folder',
-			command: onProjectChangeFolder,
+			label: 'Edit project',
+			command: onProjectEdit,
 		},
 		{
 			label: 'Remove',
@@ -50,29 +55,69 @@ function ProjectList({ history }: any | HashRouter) {
 		},
 	];
 
-	function onProjectRename(e: any) {
-		if (currentItem) dispatch(renameProject({ index: currentItem, newName: 'rename' }));
-	}
-
-	function onProjectChangeFolder(e: any) {
-		if (currentItem) dispatch(changeProjectFolder({ index: currentItem, newSrc: 'newSrc' }));
+	function onProjectEdit(e: any) {
+		setProjectDialogType(ProjectDialogEnum.edit);
+		setDisplayDialog(true);
 	}
 
 	function onProjectRemove(e: any) {
 		if (currentItem) dispatch(removeProject(currentItem));
 	}
 
-	function onItemContextMenuClickShow(e: any, index: any) {
-		setCurrentItem(index);
+	function onItemContextMenuClickHide(e: any) {
+		setCurrentItem(undefined);
 	}
 
-	function onItemContextMenuClickHide(e: any) {
-		setCurrentItem(-1);
+	function clearDefaultDialogType() {
+		setProjectDialogType(ProjectDialogEnum.add);
+		setProjectIndex(-1);
 	}
+
+	function onContextMenuShow(e: any, project: Project) {
+		contextMenuRef.current.show(e);
+		setProjectIndex(projects.findIndex((x) => x.name === project.name));
+		setCurrentItem(project);
+	}
+
+	function onProjectPinClick(index: number) {
+		dispatch(toggleProjectPin(index));
+	}
+
+	const projectItemRenderer = (project: Project, key: number) => (
+		<React.Fragment key={key}>
+			<div className="flex flex-row w-full justify-between">
+				<div
+					onClick={(e) => onProjectOpen(e, key)}
+					onContextMenu={(e) => onContextMenuShow(e, project)}
+					className="flex flex-row flex-1 dark:text-white text-sm hover:bg-indigo-800 hover:shadow-md cursor-pointer py-3">
+					<span className="w-5/12 pl-2">{project.name}</span>
+					<span className="w-6/12 font-light">{project.src}</span>
+				</div>
+				<img
+					className="hover: transform hover:scale-125 cursor-pointer"
+					alt="pin"
+					onClick={(e) => onProjectPinClick(key)}
+					src={project.isPinned ? fullPin : emptyPin}
+				/>
+			</div>
+		</React.Fragment>
+	);
 
 	return (
 		<>
-			<ProjectDialog project={projects[currentItem]} type={ProjectDialogEnum.add} />
+			<button
+				onClick={(e) => setDisplayDialog(true)}
+				className="px-4 py-2 bg-indigo-700 dark:text-white hover:bg-indigo-600 rounded-md shadow-md hover:shadow-lg">
+				Add new project
+			</button>
+			<ProjectDialog
+				project={currentItem}
+				projectIndex={projectIndex}
+				type={projectDialogType}
+				displayDialog={displayDialog}
+				setDisplayDialog={setDisplayDialog}
+				clearDefault={clearDefaultDialogType}
+			/>
 
 			<div className="flex flex-row mt-5 dark:text-white">
 				<span className="w-5/12 pl-2">Name</span>
@@ -80,25 +125,12 @@ function ProjectList({ history }: any | HashRouter) {
 			</div>
 			<hr className="bg-blue-200 h-1 border-0 mt-2 mb-3" />
 
-			{projects.map((project: Project, key: number) => {
-				return (
-					<React.Fragment key={key}>
-						<ContextMenu
-							model={contextMenuItems}
-							ref={contextMenuRef}
-							onShow={(e) => onItemContextMenuClickShow(e, key)}
-							onHide={onItemContextMenuClickHide}></ContextMenu>
-						<div
-							onClick={(e) => onProjectOpen(e, key)}
-							onContextMenu={(e) => contextMenuRef.current.show(e)}
-							className="flex flex-row dark:text-white text-sm hover:bg-indigo-800 hover:shadow-md cursor-pointer py-3">
-							<span className="w-5/12 pl-2">{project.name}</span>
-							<span className="w-6/12 font-light">{project.src}</span>
-							<span className="w-1/12">{project.isPinned ? 'yes' : 'no'}</span>
-						</div>
-					</React.Fragment>
-				);
-			})}
+			<ContextMenu
+				model={contextMenuItems}
+				ref={contextMenuRef}
+				onHide={onItemContextMenuClickHide}></ContextMenu>
+			{projects.map((project: Project, key: number) => projectItemRenderer(project, key))}
+			{projects.length < 1 && <span className="text-gray-200 ml-3">Project list is empty!</span>}
 		</>
 	);
 }

@@ -8,6 +8,6 @@ export interface Project {
     translationFolder?: string;
     projectType?: ProjectType | string;
     languages: Language[];
-    defaultLanguage?: Language;
+    defaultLanguage?: Language | null;
     excludedFolders?: string[];
 }

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { HashRouterProps, withRouter } from 'react-router-dom';
 
-function Editor({ history }: any | HashRouterProps){
+function Editor({ history }: any | HashRouterProps) {
 	useEffect(() => {
 		window.electron.on('resize-window-return', (event: any, args: any) => {
 			console.log(args);
@@ -15,7 +15,7 @@ function Editor({ history }: any | HashRouterProps){
 		e.preventDefault();
 
 		if (window.electron) {
-			window.electron.send('window-open-editor', 'overview');
+			window.electron.send('window-open-editor', { window: 'overview' });
 		}
 		history.push('/overview');
 	}
