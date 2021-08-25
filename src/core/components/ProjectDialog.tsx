@@ -334,7 +334,7 @@ const ProjectDialog = (props: ProjectDialogInterface) => {
 									</div>
 									<button
 										onClick={(e) => onRemoveLanguageClick(item)}
-										className="w-3/12 px-2 py-1 text-white rounded-md shadow-md hover:shadow-sm  bg-red-500 hover:bg-red-400">
+										className="w-20 px-2 py-1 text-sm text-white rounded-md shadow-md hover:shadow-sm  bg-red-500 hover:bg-red-400">
 										Remove
 									</button>
 								</div>

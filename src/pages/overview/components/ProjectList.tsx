@@ -8,6 +8,9 @@ import ProjectDialog from '../../../core/components/ProjectDialog';
 import ProjectDialogEnum from '../../../core/enums/ProjectDialogEnum';
 import fullPin from '../../../assets/icons/full-pin.svg';
 import emptyPin from '../../../assets/icons/empty-pin.svg';
+import pin from '../../../assets/icons/pin.png';
+import pinFilled from '../../../assets/icons/pin-filled.png';
+
 function ProjectList({ history }: any | HashRouter) {
 	const contextMenuRef = useRef() as MutableRefObject<ContextMenu>;
 	const [currentItem, setCurrentItem] = useState<Project>();
@@ -89,15 +92,15 @@ function ProjectList({ history }: any | HashRouter) {
 				<div
 					onClick={(e) => onProjectOpen(e, key)}
 					onContextMenu={(e) => onContextMenuShow(e, project)}
-					className="flex flex-row flex-1 dark:text-white text-sm hover:bg-indigo-800 hover:shadow-md cursor-pointer py-3">
+					className="flex flex-row flex-1 dark:text-white text-sm hover:bg-queenBlueHover hover:shadow-md cursor-pointer py-3">
 					<span className="w-5/12 pl-2">{project.name}</span>
 					<span className="w-6/12 font-light">{project.src}</span>
 				</div>
 				<img
-					className="hover: transform hover:scale-125 cursor-pointer"
+					className="hover: transform h-6 my-auto hover:scale-125 cursor-pointer"
 					alt="pin"
 					onClick={(e) => onProjectPinClick(key)}
-					src={project.isPinned ? fullPin : emptyPin}
+					src={project.isPinned ? pinFilled : pin}
 				/>
 			</div>
 		</React.Fragment>
@@ -107,7 +110,7 @@ function ProjectList({ history }: any | HashRouter) {
 		<>
 			<button
 				onClick={(e) => setDisplayDialog(true)}
-				className="px-4 py-2 bg-indigo-700 dark:text-white hover:bg-indigo-600 rounded-md shadow-md hover:shadow-lg">
+				className="px-4 py-2 dark:text-white bg-queenBlue hover:bg-queenBlueHover rounded-md shadow-md hover:shadow-lg">
 				Add new project
 			</button>
 			<ProjectDialog

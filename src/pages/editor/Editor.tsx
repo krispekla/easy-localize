@@ -1,33 +1,48 @@
-import React, { useEffect } from 'react';
-import { HashRouterProps, withRouter } from 'react-router-dom';
+import React from 'react';
+import FileToolbar from './components/FileEditorSection/FileToolbar';
+import FileEditor from './components/FileEditorSection/FileEditor';
+import FileTree from './components/FileEditorSection/FileTree';
+import ProjectCommands from './components/ProjectCommands';
+import ProjectInfo from './components/ProjectInfo';
+import TranslationToolbar from './components/TranslationSection/TranslationToolbar';
+import TranslationEditor from './components/TranslationSection/TranslationEditor';
+import './Editor.scss';
+import { Splitter, SplitterPanel } from 'primereact/splitter';
 
-function Editor({ history }: any | HashRouterProps) {
-	useEffect(() => {
-		window.electron.on('resize-window-return', (event: any, args: any) => {
-			console.log(args);
-		});
-		return () => {
-			window.electron.removeAllListeners('resize-window-return');
-		};
-	}, []);
-
-	function resize(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-		e.preventDefault();
-
-		if (window.electron) {
-			window.electron.send('window-open-editor', { window: 'overview' });
-		}
-		history.push('/overview');
-	}
-
+function Editor() {
 	return (
-		<div>
-			Editor
-			<button className="p-10 bg-red-500" onClick={resize}>
-				Klikni
-			</button>
+		<div className="editor flex flex-col dark px-5 pt-2">
+			<header className="flex justify-between">
+				<ProjectInfo />
+				<ProjectCommands />
+			</header>
+			<main className="flex flex-row mt-10 min-w-full">
+				<Splitter className="mt-10 min-w-full" gutterSize={8}>
+					<SplitterPanel size={20} className="p-d-flex p-ai-center p-jc-center">
+						<div className="translation flex flex-col mr-5">
+							<h2 className="dark:text-white">Translations</h2>
+							<TranslationToolbar />
+							<TranslationEditor />
+						</div>
+					</SplitterPanel>
+					<SplitterPanel className="p-d-flex p-ai-center p-jc-center">
+						<div className="files__editor flex flex-col">
+							<h2 className="dark:text-white">Project files</h2>
+							<FileToolbar />
+							<Splitter className="mt-4 min-w-full" gutterSize={8}>
+								<SplitterPanel size={5} className="">
+									<FileTree />
+								</SplitterPanel>
+								<SplitterPanel className="">
+									<FileEditor />
+								</SplitterPanel>
+							</Splitter>
+						</div>
+					</SplitterPanel>
+				</Splitter>
+			</main>
 		</div>
 	);
 }
 
-export default withRouter(Editor);
+export default Editor;

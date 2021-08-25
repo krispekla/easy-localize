@@ -30,7 +30,7 @@ function Overview() {
 
 	return (
 		<main className="overview bg-gradient-to-r from-sanJuan to-eastBay dark">
-			<h1 className="pt-3 dark:text-white text-center text-xl">Easy localise</h1>
+			<h1 className="pt-3 dark:text-white text-center text-xl uppercase">Easy localise</h1>
 			<section className="container mx-auto mt-5">
 				<h2 className="dark:text-white text-lg mb-3">Projects</h2>
 				<ProjectList />

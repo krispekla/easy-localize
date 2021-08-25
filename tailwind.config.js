@@ -11,6 +11,8 @@ module.exports = {
       colors: {
         sanJuan: "#2B5876",
         eastBay: "#4E4376",
+        queenBlue: "#446699",
+        queenBlueHover: "#5977A4",
       },
     },
   },
