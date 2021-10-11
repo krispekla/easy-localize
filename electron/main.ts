@@ -3,6 +3,7 @@ import windowConfig from './config/windowConfig';
 import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
+import { globalShortcut } from 'electron/main';
 
 let mainWindow: BrowserWindow | null;
 
@@ -31,6 +32,8 @@ function createWindow() {
 }
 
 app.whenReady().then(async () => {
+	// Disabling manual reload
+	// globalShortcut.register("CommandOrControl+R", () => { });
 	createWindow();
 
 	if (isDevelopment) {

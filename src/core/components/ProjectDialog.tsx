@@ -20,7 +20,7 @@ export interface ProjectDialogInterface {
 	displayDialog: boolean;
 	setDisplayDialog: any;
 	projectIndex: number;
-	clearDefault: any;
+	clearDefault: any | undefined;
 }
 
 const ProjectDialog = (props: ProjectDialogInterface) => {
@@ -148,7 +148,8 @@ const ProjectDialog = (props: ProjectDialogInterface) => {
 
 	const onHideDialog = () => {
 		resetState();
-		props.clearDefault();
+		if (props.clearDefault) props.clearDefault();
+
 		props.setDisplayDialog(false);
 	};
 
@@ -184,7 +185,7 @@ const ProjectDialog = (props: ProjectDialogInterface) => {
 	return (
 		<>
 			<Dialog
-				header="Add new project"
+				header={ `${props.type === ProjectDialogEnum.add ? 'Add new' : 'Update'} project`}
 				visible={props.displayDialog}
 				style={{ width: '90vw' }}
 				draggable={false}
