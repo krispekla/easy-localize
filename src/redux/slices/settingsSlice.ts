@@ -5,6 +5,7 @@ import { cloneDeep } from 'lodash'
 const initialState: Settings = {
     projects: [
     ],
+    currentProject: -1,
 };
 
 const updateElectronConfig = (state: Settings) => {
@@ -46,9 +47,13 @@ const settingsSlice = createSlice({
         loadSettings(state, action: PayloadAction<Settings>) {
             state.projects = action.payload.projects;
         },
+        setCurrentProject(state, action: PayloadAction<number>) {
+            state.currentProject = action.payload;
+            updateElectronConfig(state)
+        }
     },
 });
 
-export const { addProject, renameProject, changeProjectFolder, removeProject, updateProject, loadSettings, toggleProjectPin } = settingsSlice.actions;
+export const { addProject, renameProject, changeProjectFolder, removeProject, updateProject, loadSettings, toggleProjectPin, setCurrentProject } = settingsSlice.actions;
 
 export default settingsSlice.reducer;

@@ -1,5 +1,6 @@
 import { Project } from "./ProjectInterface";
 
 export interface Settings {
-    projects: Project[]
+    projects: Project[],
+    currentProject: number,
 }

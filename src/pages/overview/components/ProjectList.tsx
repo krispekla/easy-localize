@@ -3,7 +3,11 @@ import { ContextMenu } from 'primereact/contextmenu';
 import { HashRouter, withRouter } from 'react-router-dom';
 import { Project } from '../../../core/interfaces/ProjectInterface';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { removeProject, toggleProjectPin } from '../../../redux/slices/settingsSlice';
+import {
+	removeProject,
+	toggleProjectPin,
+	setCurrentProject,
+} from '../../../redux/slices/settingsSlice';
 import ProjectDialog from '../../../core/components/ProjectDialog';
 import ProjectDialogEnum from '../../../core/enums/ProjectDialogEnum';
 import fullPin from '../../../assets/icons/full-pin.svg';
@@ -33,9 +37,8 @@ function ProjectList({ history }: any | HashRouter) {
 	}, []);
 
 	function onProjectOpen(e: any, index?: number) {
-		e.preventDefault();
-
-		const projectId = currentItem ? currentItem : index;
+		const projectId = currentItem ? projects.findIndex((x) => x.name === currentItem.name) : index;
+		dispatch(setCurrentProject(projectId as number));
 
 		if (window.electron) {
 			window.electron.send('window-open-editor', { window: 'editor', projectId });
@@ -93,8 +96,11 @@ function ProjectList({ history }: any | HashRouter) {
 					onClick={(e) => onProjectOpen(e, key)}
 					onContextMenu={(e) => onContextMenuShow(e, project)}
 					className="flex flex-row flex-1 dark:text-white text-sm hover:bg-queenBlueHover hover:shadow-md cursor-pointer py-3">
-					<span className="w-5/12 pl-2">{project.name}</span>
-					<span className="w-6/12 font-light">{project.src}</span>
+					<span className="w-4/12 pl-2">{project.name}</span>
+					<span className="w-3/12 pl-2">{project.projectType}</span>
+					<span className="w-5/12 font-light">
+						...{project.src.slice(project.src.length - 30, project.src.length)}
+					</span>
 				</div>
 				<img
 					className="hover: transform h-6 my-auto hover:scale-125 cursor-pointer"
@@ -123,8 +129,9 @@ function ProjectList({ history }: any | HashRouter) {
 			/>
 
 			<div className="flex flex-row mt-5 dark:text-white">
-				<span className="w-5/12 pl-2">Name</span>
-				<span className="w-7/12 ">Folder</span>
+				<span className="w-4/12 pl-2">Name</span>
+				<span className="w-3/12 pl-2">Type</span>
+				<span className="w-5/12 ">Folder</span>
 			</div>
 			<hr className="bg-blue-200 h-1 border-0 mt-2 mb-3" />
 
