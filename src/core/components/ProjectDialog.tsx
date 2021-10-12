@@ -24,7 +24,6 @@ export interface ProjectDialogInterface {
 }
 
 const ProjectDialog = (props: ProjectDialogInterface) => {
-	// const [displayDialog, setDisplayDialog] = useState(false);
 	const [filteredLanguages, setFilteredLanguages] = useState<Language[]>([]);
 	const [languageDropdown, setLanguageDropdown] = useState<Language | any>(null);
 
@@ -155,7 +154,7 @@ const ProjectDialog = (props: ProjectDialogInterface) => {
 
 	const onConfirmDialog = (data: any) => {
 		if (props.type === ProjectDialogEnum.add) dispatch(addProject(data));
-		else if (props.type === ProjectDialogEnum.edit && props.projectIndex)
+		else if (props.type === ProjectDialogEnum.edit && props.projectIndex >= 0)
 			dispatch(updateProject({ project: data, index: props.projectIndex }));
 
 		resetState();
