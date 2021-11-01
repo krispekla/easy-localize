@@ -1,5 +1,4 @@
 import * as fs from 'fs'
-import { FileInfo } from '../types/interfaces/FileInfoInterface'
 import { Settings } from '../types/interfaces/SettingsInterface'
 import TreeNode from '../types/interfaces/TreeNode'
 import { app } from '../main'

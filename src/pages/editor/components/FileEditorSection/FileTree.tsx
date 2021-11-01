@@ -1,74 +1,28 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React from 'react';
 import './FileTree.scss';
-import { useAppSelector } from '../../../../redux/hooks';
-import { Project } from '../../../../core/interfaces/ProjectInterface';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { TreeNode } from '../../../../core/interfaces/TreeNodeInterface';
 import fileIcon from '../../../../assets/icons/file.svg';
 import folderIcon from '../../../../assets/icons/folder.svg';
 import folderOpenedIcon from '../../../../assets/icons/folder-opened.svg';
+import { setActiveFile, setIsExpandedOnDirectoryNode } from '../../../../redux/slices/filesSlice';
 
 function FileTree() {
-	const currentProject: Project = useAppSelector(
-		(state) => state.settings.projects[state.settings.currentProject]
-	);
-
-	const [fileTree, setFileTree] = useState<TreeNode | null>(null);
-	const [activeFile, setActiveFile] = useState<TreeNode | null>(null);
-
-	useEffect(() => {
-		window.electron.on('read-directory-tree-return', (event: any, fileTree: TreeNode) => {
-			console.log('ASDF', fileTree);
-			fileTree.isExpanded = true;
-			setFileTree(fileTree);
-		});
-
-		loadFileTree();
-
-		return () => {
-			window.electron.removeAllListeners('read-directory-tree-return');
-		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
-	function loadFileTree() {
-		if (window.electron) {
-			window.electron.send('read-directory-tree', {
-				path: currentProject.src,
-				ignoredDirectory: currentProject.excludedFolders
-					? currentProject.excludedFolders
-					: ['node_modules'],
-			});
-		}
-	}
-
-	function findAndModifyFileTreeNode(originalNodes: TreeNode[], node: TreeNode) {
-		const foundNode = originalNodes.find((x: TreeNode) => x.name === node.name);
-		if (foundNode) {
-			foundNode.isExpanded = !foundNode.isExpanded;
-			return;
-		}
-
-		originalNodes.forEach((x) => {
-			findAndModifyFileTreeNode(x.children, node);
-		});
-	}
+	const fileTree = useAppSelector((state) => state.files.tree);
+	const activeFile = useAppSelector((state) => state.files.activeFile);
+	const dispatch = useAppDispatch();
 
 	function onFileItemClick(node: TreeNode) {
-		if (node.isDirectory) {
-			// let fileTreeChildren = fileTree?.children;
-			if (fileTree?.children) {
-				findAndModifyFileTreeNode(fileTree.children, node);
-				const updatedFile = { ...fileTree } as unknown as TreeNode;
-				setFileTree(updatedFile);
-			}
+		if (node.isDirectory && fileTree?.children) {
+			dispatch(setIsExpandedOnDirectoryNode(node));
 		} else {
 			if (node.name === activeFile?.name) return;
 
-			setActiveFile(node);
+			dispatch(setActiveFile(node));
 		}
 	}
 
-	const RecursiveComponent = (node: TreeNode) => {
+	const FileRenderer = (node: TreeNode) => {
 		const hasChildren = node?.children && node.isExpanded;
 
 		return (
@@ -88,7 +42,7 @@ function FileTree() {
 					</span>
 				</div>
 				<div className="ml-3">
-					{hasChildren && node.children.map((x) => <RecursiveComponent key={x.name} {...x} />)}
+					{hasChildren && node.children.map((x) => <FileRenderer key={x.name} {...x} />)}
 				</div>
 			</>
 		);
@@ -96,7 +50,7 @@ function FileTree() {
 
 	return (
 		<div className="file__tree bg-gray-600 dark:text-white">
-			{fileTree ? RecursiveComponent({ ...fileTree }) : <div>Empty</div>}
+			{fileTree ? FileRenderer({ ...fileTree }) : <div>Empty</div>}
 		</div>
 	);
 }

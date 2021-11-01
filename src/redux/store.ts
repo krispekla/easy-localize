@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import settingsReducer from './slices/settingsSlice';
+import fileTreeReducer from './slices/filesSlice';
 
 const store = configureStore({
 	reducer: {
 		settings: settingsReducer,
+		files: fileTreeReducer,
 	},
 });
 

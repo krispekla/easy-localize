@@ -3,16 +3,14 @@ import { ipcMain } from '../main';
 import TreeNode from '../types/interfaces/TreeNode';
 
 function readDirectoryTreeHandler(event: Electron.IpcMainEvent, { path, ignoredDirectory }: { path: string, ignoredDirectory: string[] }) {
-    console.log("%c 🚎: readDirectoryTreeHandler -> path, ignoredDirectory ", "font-size:16px;background-color:#e1d35b;color:black;", path, ignoredDirectory)
-    const appData: TreeNode = readDirectoryTree(path, ignoredDirectory)
-    console.log("%c 🇹🇬: readDirectoryTreeHandler -> appData ", "font-size:16px;background-color:#19f241;color:black;", appData)
-    event.sender.send('read-directory-tree-return', appData);
+    const loadedDirectoryTree: TreeNode = readDirectoryTree(path, ignoredDirectory)
+    event.sender.send('read-directory-tree-return', loadedDirectoryTree);
 }
 
-function readFileContentHandler(event: Electron.IpcMainEvent, { path }: { path: string }) {
-    const appData = readFileContent(path)
-    event.sender.send('settings-load-return', appData);
+function readFileHandler(event: Electron.IpcMainEvent, { path }: { path: string }) {
+    const loadedFile = readFileContent(path)
+    event.sender.send('read-file-return', loadedFile);
 }
 
 export const readDirectoryTreeListener = ipcMain.on('read-directory-tree', readDirectoryTreeHandler)
-export const readFileContentListener = ipcMain.on('read-file-content', readFileContentHandler)
+export const readFileContentListener = ipcMain.on('read-file', readFileHandler)
