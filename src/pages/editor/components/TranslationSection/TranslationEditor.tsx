@@ -1,14 +1,57 @@
 import React from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import { InputText } from 'primereact/inputtext';
 
 function TranslationEditor() {
+	const inputTextEditor = (productKey: any, props: { rowData: { [x: string]: any; }; }, field: string) => {
+        return <InputText type="text" value={props.rowData[field]} onChange={(e: { target: { value: any; }; }) => onEditorValueChange(productKey, props, e.target.value)} />;
+    }
+
+    const codeEditor = (productKey: any, props: any) => {
+        return inputTextEditor(productKey, props, 'code');
+    }
+	const onEditorValueChange = (productKey: any, props: { rowData?: { [x: string]: any; }; value?: any; rowIndex?: any; field?: any; }, value: any) => {
+        let updatedProducts = [...props.value];
+        updatedProducts[props.rowIndex][props.field] = value;
+    }
+	
 	return (
 		<>
-			<DataTable editMode="cell" className="w-80 mt-4">
-				<Column field="id" header="ID"></Column>
-				<Column field="ENG" header="ENG"></Column>
-				<Column field="HR" header="HR"></Column>
+			<DataTable
+				value={[
+					{
+						id: 'test',
+						ENG: 'test',
+						HR: 'test',
+					},
+					{
+						id: 'test',
+						ENG: 'test',
+						HR: 'test',
+					},
+					{
+						id: 'test',
+						ENG: 'test',
+						HR: 'test',
+					},
+					{
+						id: 'test',
+						ENG: 'test',
+						HR: 'test',
+					},
+					{
+						id: 'test',
+						ENG: 'test',
+						HR: 'test',
+					},
+				]}
+				editMode="cell"
+				className="w-80 mt-4"
+				reorderableColumns>
+				<Column field="id" header="ID" editor={(props) => codeEditor('products1', props)}></Column>
+				<Column field="ENG" header="ENG" editor={(props) => codeEditor('products1', props)}></Column>
+				<Column field="HR" header="HR" editor={(props) => codeEditor('products1', props)}></Column>
 			</DataTable>
 			<div className="mt-auto">
 				<div className="flex justify-between">
