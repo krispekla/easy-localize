@@ -38,7 +38,7 @@ const ProjectDialog = (props: ProjectDialogInterface) => {
 					languages: [],
 					defaultLanguage: null,
 					projectType: ProjectType[1],
-					excludedFolders: [],
+					excludedFolders: []
 			  };
 
 	const {
