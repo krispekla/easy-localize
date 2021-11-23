@@ -28,12 +28,12 @@ function FileTree() {
 		return (
 			<>
 				<div
-					className={`flex flex-row ml-3 mb-1 hover:bg-gray-700 cursor-pointer ${
+					className={`text-xs flex flex-row ml-3 mb-1 hover:bg-gray-700 cursor-pointer ${
 						node.isIgnored && 'text-gray-800'
 					}`}
 					onClick={(e) => onFileItemClick(node)}>
 					<img
-						className="h-6 my-auto"
+						className="h-5 my-auto"
 						alt=""
 						src={node.isDirectory ? (node.isExpanded ? folderOpenedIcon : folderIcon) : fileIcon}
 					/>
@@ -49,9 +49,12 @@ function FileTree() {
 	};
 
 	return (
-		<div className="file__tree bg-gray-600 dark:text-white">
-			{fileTree ? FileRenderer({ ...fileTree }) : <div>Empty</div>}
-		</div>
+		<section className="flex flex-col">
+			<h2 className="mb-1 text-gray-200">Files</h2>
+			<div className="file__tree bg-gray-600 dark:text-white">
+				{fileTree ? FileRenderer({ ...fileTree }) : <div>Empty</div>}
+			</div>
+		</section>
 	);
 }
 
