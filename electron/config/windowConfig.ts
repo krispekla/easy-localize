@@ -9,6 +9,7 @@ const windowConfig: any = {
 		maxHeight: 600,
 		animation: true,
 		center: true,
+		maximum: false,
 	},
 	editor: {
 		title: 'Easy localize - Editor',
@@ -19,6 +20,7 @@ const windowConfig: any = {
 		minHeight: 820,
 		maxHeight: 900,
 		animation: true,
+		maximum: true,
 	},
 };
 
