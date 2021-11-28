@@ -1,12 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { HashRouterProps, withRouter } from 'react-router-dom';
-import FileToolbar from './components/FileEditorSection/FileToolbar';
 import FileEditor from './components/FileEditorSection/FileEditor';
 import FileTree from './components/FileEditorSection/FileTree';
 import ProjectCommands from './components/ProjectCommands';
 import ProjectInfo from './components/ProjectInfo';
-import TranslationToolbar from './components/TranslationSection/TranslationToolbar';
-import TranslationEditor from './components/TranslationSection/TranslationEditor';
 import './Editor.scss';
 import { Splitter, SplitterPanel } from 'primereact/splitter';
 import { Project } from '../../core/interfaces/ProjectInterface';
@@ -14,13 +11,17 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { TreeNode } from '../../core/interfaces/TreeNodeInterface';
 import { setFiles } from '../../redux/slices/filesSlice';
 import FileEditorCommand from './components/CommandSection/FileEditorCommand';
+import { SelectButton } from 'primereact/selectbutton';
+import TranslationEditorCommand from './components/CommandSection/TranslationEditorCommand';
+import TranslationEditor from './components/TranslationSection/TranslationEditor';
 
 function Editor({ history }: any | HashRouterProps) {
+	const [modeToggle, setModeToggle] = useState('editor');
 	const currentProject: Project = useAppSelector(
 		(state) => state.settings.projects[state.settings.currentProject]
 	);
 	const dispatch = useAppDispatch();
-
+	const toggleModeOptions = ['editor', 'translations'];
 	useEffect(() => {
 		if (!currentProject) {
 			window.electron.send('window-open-editor', { window: 'overview' });
@@ -54,9 +55,20 @@ function Editor({ history }: any | HashRouterProps) {
 	return (
 		<div className="editor flex flex-col dark pt-2">
 			{currentProject && (
-				<header className="flex justify-between px-5">
-					<ProjectInfo />
-					<ProjectCommands />
+				<header className="flex flex-col justify-between px-5">
+					<div className="flex justify-between">
+						<ProjectInfo />
+						<ProjectCommands />
+					</div>
+					<div className="pb-2">
+						<SelectButton
+							className="ml-19"
+							value={modeToggle}
+							options={toggleModeOptions}
+							unselectable={false}
+							onChange={(e) => setModeToggle(e.value)}
+						/>
+					</div>
 				</header>
 			)}
 			{currentProject && (
@@ -89,10 +101,10 @@ function Editor({ history }: any | HashRouterProps) {
 						<SplitterPanel className="splitter-editor">
 							<Splitter layout="vertical" className="" gutterSize={5}>
 								<SplitterPanel className="" size={70}>
-									<FileEditor />
+									{modeToggle === 'editor' ? <FileEditor /> : <TranslationEditor />}
 								</SplitterPanel>
 								<SplitterPanel className="" size={30}>
-									<FileEditorCommand />
+									{modeToggle === 'editor' ? <FileEditorCommand /> : <TranslationEditorCommand />}
 								</SplitterPanel>
 							</Splitter>
 						</SplitterPanel>

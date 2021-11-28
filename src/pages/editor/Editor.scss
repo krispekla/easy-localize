@@ -5,6 +5,16 @@
 
 	header {
 		height: 144px;
+
+		.p-selectbutton {
+			.p-button.p-component {
+				width: 130px;
+				@apply text-sm text-white bg-queenBlue hover:bg-queenBlueHover border-0 shadow-md hover:shadow-lg;
+			}
+			.p-button.p-component.p-highlight {
+				@apply bg-indigo-900;
+			}
+		}
 	}
 
 	main {

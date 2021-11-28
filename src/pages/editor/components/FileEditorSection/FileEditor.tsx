@@ -43,8 +43,8 @@ function FileEditor() {
 		<section className="file__editor flex flex-col pl-3 pt-2">
 			<h2 className="mb-1 text-gray-200">Editor</h2>
 			<div
-				className={`bg-gray-600 dark:text-white ${
-					isLoading ? 'flex items-center bg-gray-800' : 'bg-gray-600'
+				className={` dark:text-white ${
+					isLoading ? 'flex items-center' : ''
 				}`}>
 				{fileContent.length > 0 &&
 					fileContent.map((line, index) => {
@@ -65,9 +65,9 @@ function FileEditor() {
 
 				{isLoading && (
 					<ProgressSpinner
-						className="justify-self-center align-middle h-100"
-						style={{ width: '50px', height: '50px' }}
-						strokeWidth="8"
+						className="justify-self-center align-center h-100"
+						style={{ width: '100px', height: '100px' }}
+						strokeWidth="6"
 						animationDuration=".5s"
 					/>
 				)}
