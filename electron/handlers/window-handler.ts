@@ -9,10 +9,10 @@ function setWindow({ sender }: Electron.IpcMainEvent, config: { window: string, 
 
     browserWindow.setTitle(title);
     browserWindow.setMinimumSize(minWidth, minHeight);
-    
-    
+
     if(maximum) {
-        const { width: machineScreenWidth, height: machineScreenHeight } = screen.getPrimaryDisplay().workAreaSize;
+        const winBounds = browserWindow.getBounds();
+        const { width: machineScreenWidth, height: machineScreenHeight } = screen.getDisplayNearestPoint({x: winBounds.x, y: winBounds.y}).workAreaSize;
         browserWindow.setMaximumSize(machineScreenWidth, machineScreenHeight);
         browserWindow.setSize(machineScreenWidth, machineScreenHeight);
     } else {

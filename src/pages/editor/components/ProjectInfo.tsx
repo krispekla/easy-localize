@@ -33,6 +33,10 @@ function ProjectInfo() {
 				className="mt-1 px-3 h-10 text-sm text-white bg-queenBlue hover:bg-queenBlueHover rounded-md shadow-md hover:shadow-lg uppercase">
 				Project configuration
 			</button>
+			<button
+				className="ml-5 mt-1 px-3 h-10 text-sm text-white bg-queenBlue hover:bg-queenBlueHover rounded-md shadow-md hover:shadow-lg uppercase">
+				Translation configuration
+			</button>
 			<ProjectDialog
 				project={currentProject}
 				projectIndex={currentProjectIndex}
