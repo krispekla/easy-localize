@@ -49,8 +49,8 @@ function FileTree() {
 	};
 
 	return (
-		<section className="flex flex-col">
-			<h2 className="mb-1 text-gray-200">Files</h2>
+		<section className="flex flex-col pl-3 pt-2">
+			<h2 className="mb-3 text-gray-200">Files</h2>
 			<div className="file__tree bg-gray-600 dark:text-white">
 				{fileTree ? FileRenderer({ ...fileTree }) : <div>Empty</div>}
 			</div>

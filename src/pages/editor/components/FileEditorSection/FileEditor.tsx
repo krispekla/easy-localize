@@ -40,38 +40,38 @@ function FileEditor() {
 	}
 
 	return (
-		<section className='flex flex-col'>
-		<h2 className='mb-1 text-gray-200'>Editor</h2>
-		<div
-			className={`file__editor w-full bg-gray-600 dark:text-white ${
-				isLoading ? 'flex items-center bg-gray-800' : 'bg-gray-600'
-			}`}>
-			{fileContent.length > 0 &&
-				fileContent.map((line, index) => {
-					return (
-						<div className="file__line flex text-xs flex-row" key={line + index}>
-							<span className="text-gray-400 mr-3">{index + 1}</span>
-							{line}
-							{/* {line.split('').map((char, charIndex) => {
+		<section className="file__editor flex flex-col pl-3 pt-2">
+			<h2 className="mb-1 text-gray-200">Editor</h2>
+			<div
+				className={`bg-gray-600 dark:text-white ${
+					isLoading ? 'flex items-center bg-gray-800' : 'bg-gray-600'
+				}`}>
+				{fileContent.length > 0 &&
+					fileContent.map((line, index) => {
+						return (
+							<div className="file__line flex text-xs flex-row" key={line + index}>
+								<span className="text-gray-400 mr-3">{index + 1}</span>
+								{line}
+								{/* {line.split('').map((char, charIndex) => {
 								return (
 									<span className="char__element" key={char + index + charIndex}>
 										{char}
 									</span>
 								);
 							})} */}
-						</div>
-					);
-				})}
+							</div>
+						);
+					})}
 
-			{isLoading && (
-				<ProgressSpinner
-					className="justify-self-center align-middle h-100"
-					style={{ width: '50px', height: '50px' }}
-					strokeWidth="8"
-					animationDuration=".5s"
-				/>
-			)}
-		</div>
+				{isLoading && (
+					<ProgressSpinner
+						className="justify-self-center align-middle h-100"
+						style={{ width: '50px', height: '50px' }}
+						strokeWidth="8"
+						animationDuration=".5s"
+					/>
+				)}
+			</div>
 		</section>
 	);
 }

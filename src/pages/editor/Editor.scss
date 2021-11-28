@@ -3,53 +3,92 @@
 	width: 100%;
 	height: 100%;
 
+	header {
+		height: 144px;
+	}
+
 	main {
-		min-height: 42rem;
-		height: 44rem;
-	}
-
-	.translation {
 		height: 100%;
 		width: 100%;
-
-		.p-datatable .p-datatable-thead > tr > th,
-		.p-datatable .p-datatable-tbody > tr {
-			background: #4b5563 !important;
-			color: #fff;
-		}
-		
-		.p-datatable .p-datatable-thead > tr > th,
-		.p-datatable .p-datatable-tbody > tr > td {
-			border: 1px solid #3f4752;
-		}
+		min-height: 15rem;
+		background-color: #4b5563;
+		overflow: hidden;
 	}
 
-	.files__editor {
-		height: 100%;
-		width: 100%;
+	// .translation {
+	// 	height: 100%;
+	// 	width: 100%;
 
-		.p-splitter {
-			.p-splitter-panel:first-of-type {
-				max-width: 21rem;
-			}
+	// 	.p-datatable .p-datatable-thead > tr > th,
+	// 	.p-datatable .p-datatable-tbody > tr {
+	// 		background: #4b5563 !important;
+	// 		color: #fff;
+	// 	}
 
-			.p-splitter-gutter {
-				margin: 0rem 0.4rem !important;
-			}
-		}
-	}
+	// 	.p-datatable .p-datatable-thead > tr > th,
+	// 	.p-datatable .p-datatable-tbody > tr > td {
+	// 		border: 1px solid #3f4752;
+	// 	}
+	// }
+
+	// .files__editor {
+	// 	height: 100%;
+	// 	width: 100%;
+
+	// 	.p-splitter {
+	// 		.p-splitter-panel:first-of-type {
+	// 			max-width: 21rem;
+	// 		}
+
+	// 		.p-splitter-gutter {
+	// 			margin: 0rem 0.4rem !important;
+	// 		}
+	// 	}
+	// }
 
 	.p-splitter {
 		background: none;
 		border: none;
 
+		.p-splitter-panel {
+			overflow-y: auto;
+			overflow-x: auto;
+
+			&::-webkit-scrollbar {
+				width: 8px;
+			}
+
+			/* Track */
+			&::-webkit-scrollbar-track {
+				box-shadow: inset 0 0 5px rgba(75, 85, 99, var(--tw-bg-opacity));
+			}
+
+			/* Handle */
+			&::-webkit-scrollbar-thumb {
+				background: rgba(54, 48, 48, 0.637);
+			}
+		}
+
 		.p-splitter-gutter {
 			background: #374051;
-			margin: 8.2rem 0.4rem 0 0.4rem;
 
 			.p-splitter-gutter-handle {
 				background: #2f3746;
 			}
 		}
+	}
+
+	.splitter-editor {
+		.p-splitter-panel:first-of-type {
+			max-height: 70vh;
+			min-height: 450px;
+			height: 100%;
+		}
+	}
+
+	.filetree-splitter {
+		max-width: 290px;
+		min-width: 180px;
+		width: 200px;
 	}
 }
