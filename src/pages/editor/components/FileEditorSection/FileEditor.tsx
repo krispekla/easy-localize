@@ -51,14 +51,14 @@ function FileEditor() {
 						return (
 							<div className="file__line flex text-xs flex-row" key={line + index}>
 								<span className="text-gray-400 mr-3">{index + 1}</span>
-								{line}
-								{/* {line.split('').map((char, charIndex) => {
+								{/* {line} */}
+								{line.split('').map((char, charIndex) => {
 								return (
 									<span className="char__element" key={char + index + charIndex}>
 										{char}
 									</span>
 								);
-							})} */}
+							})}
 							</div>
 						);
 					})}

@@ -16,44 +16,33 @@ function TranslationEditor() {
         updatedProducts[props.rowIndex][props.field] = value;
     }
 	
+	const fillData = new Array<any>(30).fill(		{
+		id: 'test',
+		HR: 'test',
+	}, 0 , 30)
+
 	return (
 		<>
 			<DataTable
-				value={[
-					{
-						id: 'test',
-						ENG: 'test',
-						HR: 'test',
-					},
-					{
-						id: 'test',
-						ENG: 'test',
-						HR: 'test',
-					},
-					{
-						id: 'test',
-						ENG: 'test',
-						HR: 'test',
-					},
-					{
-						id: 'test',
-						ENG: 'test',
-						HR: 'test',
-					},
-					{
-						id: 'test',
-						ENG: 'test',
-						HR: 'test',
-					},
-				]}
+				style={{width: '100%', height: '100%', overflow: 'scroll'}}
+				value={fillData}
 				editMode="cell"
-				className="w-80 mt-4"
+				className="mt-4"
+				resizableColumns 
+				columnResizeMode="expand"
+				showGridlines 
 				reorderableColumns>
-				<Column field="id" header="ID" editor={(props) => codeEditor('products1', props)}></Column>
-				<Column field="ENG" header="ENG" editor={(props) => codeEditor('products1', props)}></Column>
-				<Column field="HR" header="HR" editor={(props) => codeEditor('products1', props)}></Column>
+				<Column style={{minWwidth: '60px'}} field="id" header="ID" editor={(props) => codeEditor('products1', props)}></Column>
+				<Column style={{minWwidth: '100px'}} field="ENG" header="ENG" editor={(props) => codeEditor('products1', props)}></Column>
+				<Column style={{minWwidth: '100px'}} field="HR" header="HR" editor={(props) => codeEditor('products1', props)}></Column>
+				<Column style={{minWwidth: '100px'}} field="DE" header="DE" editor={(props) => codeEditor('products1', props)}></Column>
+				<Column style={{minWwidth: '100px'}} field="ITA" header="ITA" editor={(props) => codeEditor('products1', props)}></Column>
+				<Column style={{minWwidth: '100px'}} field="ITA" header="ITA" editor={(props) => codeEditor('products1', props)}></Column>
+				<Column style={{minWwidth: '100px'}} field="ITA" header="ITA" editor={(props) => codeEditor('products1', props)}></Column>
+				<Column style={{minWwidth: '100px'}} field="ITA" header="ITA" editor={(props) => codeEditor('products1', props)}></Column>
+				<Column style={{minWwidth: '100px'}} field="ITA" header="ITA" editor={(props) => codeEditor('products1', props)}></Column>
 			</DataTable>
-			<div className="mt-auto">
+			{/* <div className="mt-auto">
 				<div className="flex justify-between">
 					<button className="px-2 h-8 text-xs text-gray-900  bg-gray-300 hover:bg-gray-200 rounded-md shadow-md hover:shadow-lg w-36">
 						Add New Translation
@@ -65,7 +54,7 @@ function TranslationEditor() {
 						Save
 					</button>
 				</div>
-			</div>
+			</div> */}
 		</>
 	);
 }

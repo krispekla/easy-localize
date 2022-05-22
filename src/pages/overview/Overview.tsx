@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { MouseEventHandler, useEffect } from 'react';
 import { Settings } from '../../core/interfaces/SettingsInterface';
 import { useAppDispatch } from '../../redux/hooks';
 import { loadSettings } from '../../redux/slices/settingsSlice';
@@ -27,14 +27,23 @@ function Overview() {
 		};
 	}, [dispatch]);
 
+	function quitApplication() {
+		window.close();
+	}
 
 	return (
 		<main className="overview bg-gradient-to-r from-sanJuan to-eastBay dark">
+			<div className="flex row"></div>
 			<h1 className="pt-3 dark:text-white text-center text-xl uppercase">Easy localise</h1>
 			<section className="container mx-auto mt-5">
 				<h2 className="dark:text-white text-lg mb-3">Projects</h2>
 				<ProjectList />
 			</section>
+			<button
+				className="absolute top-2 right-3 px-4 py-2 dark:text-white bg-red-700 hover:bg-red-600 rounded-md shadow-md hover:shadow-lg"
+				onClick={quitApplication}>
+				Quit
+			</button>
 		</main>
 	);
 }

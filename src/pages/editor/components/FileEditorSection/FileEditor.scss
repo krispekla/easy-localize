@@ -9,16 +9,16 @@
 		// margin: 11px 5px; //problem with splitter
 		font-size: 13px;
 
-		// .char__element {
-		// 	&:hover {
-		// 		border: 1px solid red;
-		// 		&::before {
-		// 			content: '\25bc';
-		// 			color: blue;
-		// 			position: absolute;
-		// 			top: -15px;
-		// 		}
-		// 	}
-		// }
+		.char__element {
+			&:hover {
+				border: 1px solid red;
+				&::before {
+					content: '\25bc';
+					color: blue;
+					position: absolute;
+					top: -15px;
+				}
+			}
+		}
 	}
 }

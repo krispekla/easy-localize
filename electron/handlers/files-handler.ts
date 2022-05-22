@@ -1,4 +1,4 @@
-import { readFileContent, readDirectoryTree } from '../util/file-helper';
+import { readFileContent, readDirectoryTree, readTranslations } from '../util/file-helper';
 import { ipcMain } from '../main';
 import TreeNode from '../types/interfaces/TreeNode';
 
@@ -12,5 +12,11 @@ function readFileHandler(event: Electron.IpcMainEvent, { path }: { path: string 
     event.sender.send('read-file-return', loadedFile);
 }
 
+function readTranslationsHandler(event: Electron.IpcMainEvent, { path }: { path: string }) {
+    const translationsList = readTranslations(path)
+    event.sender.send('read-translation-files-return', translationsList);
+}
+
 export const readDirectoryTreeListener = ipcMain.on('read-directory-tree', readDirectoryTreeHandler)
 export const readFileContentListener = ipcMain.on('read-file', readFileHandler)
+export const readTranslationsListener = ipcMain.on('read-translation-files', readTranslationsHandler)

@@ -27,15 +27,22 @@ function Editor({ history }: any | HashRouterProps) {
 			window.electron.send('window-open-editor', { window: 'overview' });
 			history.push('/overview');
 		} else {
+			window.electron.on('read-translation-files-return', (event: any, fileTree: TreeNode) => {
+				fileTree.isExpanded = true;
+				dispatch(setFiles(fileTree));
+			});
+
 			window.electron.on('read-directory-tree-return', (event: any, fileTree: TreeNode) => {
 				fileTree.isExpanded = true;
 				dispatch(setFiles(fileTree));
 			});
 
+			loadTranslationFiles();
 			loadFileTree();
 		}
 
 		return () => {
+			window.electron.removeAllListeners('read-translation-files-return');
 			window.electron.removeAllListeners('read-directory-tree-return');
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -48,6 +55,14 @@ function Editor({ history }: any | HashRouterProps) {
 				ignoredDirectory: currentProject.excludedFolders
 					? currentProject.excludedFolders
 					: ['node_modules'],
+			});
+		}
+	}
+
+	function loadTranslationFiles() {
+		if (window.electron) {
+			window.electron.send('read-translation-files', {
+				path: currentProject.translationFolder,
 			});
 		}
 	}
@@ -77,27 +92,6 @@ function Editor({ history }: any | HashRouterProps) {
 						<SplitterPanel className="filetree-splitter">
 							<FileTree />
 						</SplitterPanel>
-						{/* <SplitterPanel size={20} className="p-d-flex p-ai-center p-jc-center">
-							<div className="translation flex flex-col mr-5">
-								<h2 className="dark:text-white">Translations</h2>
-								<TranslationToolbar />
-								<TranslationEditor />
-							</div>
-						</SplitterPanel> */}
-						{/* <SplitterPanel className="p-d-flex p-ai-center p-jc-center"> */}
-						{/* <div className="files__editor flex flex-col"> */}
-						{/* <h2 className="dark:text-white">Project files</h2> */}
-						{/* <FileToolbar /> */}
-						{/* <Splitter className="pt-3 min-w-full" gutterSize={5}> */}
-						{/* <SplitterPanel size={5} className="">
-										<FileTree />3
-									</SplitterPanel>
-									<SplitterPanel className="">
-										<FileEditor />
-									</SplitterPanel> */}
-						{/* </Splitter> */}
-						{/* </div> */}
-						{/* </SplitterPanel> */}
 						<SplitterPanel className="splitter-editor">
 							<Splitter layout="vertical" className="" gutterSize={5}>
 								<SplitterPanel className="" size={70}>
