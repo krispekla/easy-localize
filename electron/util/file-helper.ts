@@ -3,6 +3,7 @@ import * as path from 'path';
 import { Settings } from '../types/interfaces/SettingsInterface';
 import TreeNode from '../types/interfaces/TreeNode';
 import { app } from '../main';
+import { flatten } from './utils';
 
 let APP_CONFIG_ROOT_PATH_CONFIG: string;
 
@@ -65,69 +66,30 @@ export function readDirectoryTree(path: string, ignoredDirectory: string[]): Tre
 
 export function readTranslations(url: string): Map<String, Translation> {
 	const files = fs.readdirSync(url).filter((file) => path.extname(file) === '.json');
+	const translationsList: Map<String, Translation> = new Map<String, Translation>();
 
-	console.log('🚀 ~ file: file-helper.ts ~ line 73 ~ readTranslations ~ directory', files);
-
-	let translationsList: Map<String, Translation> = new Map<String, Translation>();
+	const loadedTranslations = new Map<String, any>();
 	files.forEach((file, index) => {
 		const rawData = fs.readFileSync(path.join(url, file));
-		const loadedData = JSON.parse(rawData.toString());
 		const lngAlpha2 = file.slice(0, 2);
-
-		for (const [key, value] of Object.entries(loadedData)) {
-			let translation: Translation;
-			if (index === 0) {
-				if (typeof value === 'string') {
-					translation = {
-						id: key,
-						translations: { [lngAlpha2]: value },
-						groupParent: 'upitno jos',
-						groupName: '',
-					};
-				} else {
-					translation = {
-						groupParent: 'upitno jos',
-						groupName: key,
-					};
-				}
-
-				translationsList.set(key, translation);
-			} else {
-				translation = translationsList.get(key);
-
-				if (typeof value === 'string') {
-					translation.id = key;
-					// if(translation.translations.hasOwnProperty(lngAlpha2)) {
-					//     translation.translations = {[lngAlpha2]: value};
-					// }
-					translation.translations[lngAlpha2] = value;
-
-					translation.groupParent = 'upitno';
-					translation.groupName = '';
-					// translation = {
-					// 	id: key,
-					// 	translations: { [lngAlpha2]: value },
-					// 	groupParent: 'upitno jos',
-					// 	groupName: '',
-					// };
-				} else {
-					translation.id = key;
-					translation = {
-						groupParent: 'upitno jos',
-						groupName: key,
-					};
-				}
-
-				translationsList.set(key, translation);
-			}
-		}
+		loadedTranslations.set(lngAlpha2, flatten(JSON.parse(rawData.toString())));
 	});
 
+	// TODO: Find default language
+	// Go through default language and set its keys
+	// Go through other languages and set their keys
+	// Check if default language continue to next
+	// If key is found add it along its alpha2 key
+	// else continue
+
+	loadedTranslations.forEach((value, key) => {
+		if (value === 'en') return;
+	});
 	return translationsList;
 }
 
 export interface Translation {
-	id?: String;
+	id: String;
 	translations?: Object;
 	groupParent: String;
 	groupName: String;
