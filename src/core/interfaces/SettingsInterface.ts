@@ -1,6 +1,6 @@
 import { Project } from "./ProjectInterface";
 
-export interface Settings {
+export type Settings = {
     projects: Project[],
     currentProject: number,
 }

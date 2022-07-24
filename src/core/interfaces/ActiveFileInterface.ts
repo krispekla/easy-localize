@@ -1,5 +1,5 @@
 import { TreeNode } from "./TreeNodeInterface";
 
-export interface ActiveFile {
+export type ActiveFile = {
     currentFile: TreeNode
 }

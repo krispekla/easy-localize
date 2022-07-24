@@ -1,7 +1,7 @@
 import ProjectType from "../enums/ProjectType";
 import { Language } from "./LanguageInterface";
 
-export interface Project {
+export type Project = {
     name: string;
     src: string;
     isPinned: boolean;

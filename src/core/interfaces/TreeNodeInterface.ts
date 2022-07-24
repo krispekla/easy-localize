@@ -1,5 +1,5 @@
 
-export interface TreeNode {
+export type TreeNode = {
     name: string;
     path: string;
     children: Array<TreeNode>;

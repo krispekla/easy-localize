@@ -1,6 +1,6 @@
 import { TreeNode } from './TreeNodeInterface';
 
-export interface FileTreeInterface {
+export type FileTreeInterface = {
 	tree: TreeNode | null;
 	activeFile: TreeNode | null;
 }
