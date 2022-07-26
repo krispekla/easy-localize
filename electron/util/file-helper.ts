@@ -64,7 +64,7 @@ export function readDirectoryTree(path: string, ignoredDirectory: string[]): Tre
 	return root;
 }
 
-export function readTranslations(url: string): Map<String, Translation> {
+export function readTranslations(url: string, defaultLanguage: string): Map<String, Translation> {
 	const files = fs.readdirSync(url).filter((file) => path.extname(file) === '.json');
 	const translationsList: Map<String, Translation> = new Map<String, Translation>();
 
@@ -75,29 +75,36 @@ export function readTranslations(url: string): Map<String, Translation> {
 		loadedTranslations.set(lngAlpha2, flatten(JSON.parse(rawData.toString())));
 	});
 
-	// TODO: Find default language
+	// TODO: ~~Find default language~~
 	// Go through default language and set its keys
-	// Go through other languages and set their keys
-	// Check if default language continue to next
-	// If key is found add it along its alpha2 key
-	// else continue
-
-	loadedTranslations.forEach((value, key) => {
-		if (value === 'en') return;
+	const translationResult = new Map<String, Translation>();
+	for (const [key, value] of Object.entries(loadedTranslations.get(defaultLanguage))) {
+		translationResult.set(key, {
+			translations: new Map<String, String>([[defaultLanguage as String, value as String]]),
+		});
+	}
+	// Go through other languages and set translationResult to their keys
+	loadedTranslations.forEach((translations, lngAlpha2Key) => {
+		// Check if default language continue to next
+		if (lngAlpha2Key === defaultLanguage) return;
+		for (const [key, value] of Object.entries(translations)) {
+			if (translationResult.has(key)) {
+				translationResult.get(key).translations.set(key, value as String);
+			}
+		}
 	});
-	return translationsList;
+	return loadedTranslations;
 }
 
-export interface Translation {
-	id: String;
-	translations?: Object;
-	groupParent: String;
-	groupName: String;
-}
-export interface TranslationList {
-	translations: Translation[];
-}
-
-type Object = {
-	[key: string]: String;
+export type Translation = {
+	translations?: Map<String, String>;
+	occurances?: [];
 };
+
+export type TranslationList = {
+	translations: Translation[];
+};
+
+// type Object = {
+// 	[key: string]: String;
+// };
