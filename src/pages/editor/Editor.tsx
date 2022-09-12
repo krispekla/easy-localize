@@ -63,6 +63,7 @@ function Editor({ history }: any | HashRouterProps) {
 		if (window.electron) {
 			window.electron.send('read-translation-files', {
 				path: currentProject.translationFolder,
+				defaultLanguage: currentProject.defaultLanguage,
 			});
 		}
 	}
