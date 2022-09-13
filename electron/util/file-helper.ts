@@ -16,17 +16,14 @@ function checkIfConfigFileExists() {
 
 export function writeAppSettings(event: Electron.IpcMainEvent, args: any[]) {
 	checkIfConfigFileExists();
-
 	const configData = JSON.stringify(args);
 	fs.writeFileSync(APP_CONFIG_ROOT_PATH_CONFIG, configData, 'utf-8');
 }
 
 export function readAppSettings(): Settings {
 	checkIfConfigFileExists();
-
 	const rawData = fs.readFileSync(APP_CONFIG_ROOT_PATH_CONFIG);
 	let loadedData = JSON.parse(rawData.toString());
-
 	return loadedData;
 }
 
@@ -57,45 +54,37 @@ export function readDirectoryTree(path: string, ignoredDirectory: string[]): Tre
 					stack.push(childNode);
 				}
 			}
-
 			currentNode.sort();
 		}
 	}
 	return root;
 }
 
-export function readTranslations(url: string): Map<String, Translation> {
+export function readTranslations(url: string): Translation {
 	const files = fs.readdirSync(url).filter((file) => path.extname(file) === '.json');
-	const translationsList: Map<String, Translation> = new Map<String, Translation>();
-
-	const loadedTranslations = new Map<String, any>();
+	const loadedTranslationsPerLanguage: any = {};
 	files.forEach((file, index) => {
 		const rawData = fs.readFileSync(path.join(url, file));
 		const lngAlpha2 = file.slice(0, 2);
-		loadedTranslations.set(lngAlpha2, flatten(JSON.parse(rawData.toString())));
+		loadedTranslationsPerLanguage[lngAlpha2] = flatten(JSON.parse(rawData.toString()));
 	});
-
-	// TODO: Find default language
-	// Go through default language and set its keys
-	// Go through other languages and set their keys
-	// Check if default language continue to next
-	// If key is found add it along its alpha2 key
-	// else continue
-
-	loadedTranslations.forEach((value, key) => {
-		if (value === 'en') return;
-	});
-	return translationsList;
+	const loadedTranslations: Translation = {};
+	for (const [lng, translations] of Object.entries(loadedTranslationsPerLanguage)) {
+		for (const [key, translation] of Object.entries(translations)) {
+			if (loadedTranslations[key]) {
+				loadedTranslations[key][lng] = translation;
+			} else {
+				loadedTranslations[key] = {
+					[lng]: translation,
+				};
+			}
+		}
+	}
+	return loadedTranslations;
 }
 
 export interface Translation {
-	id: String;
-	translations?: Object;
-	groupParent: String;
-	groupName: String;
-}
-export interface TranslationList {
-	translations: Translation[];
+	[name: string]: Object;
 }
 
 type Object = {

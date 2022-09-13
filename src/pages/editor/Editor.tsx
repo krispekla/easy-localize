@@ -9,28 +9,31 @@ import { Splitter, SplitterPanel } from 'primereact/splitter';
 import { Project } from '../../core/interfaces/ProjectInterface';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { TreeNode } from '../../core/interfaces/TreeNodeInterface';
-import { setFiles } from '../../redux/slices/filesSlice';
+import { setFiles, setTranslations } from '../../redux/slices/filesSlice';
 import FileEditorCommand from './components/CommandSection/FileEditorCommand';
 import { SelectButton } from 'primereact/selectbutton';
 import TranslationEditorCommand from './components/CommandSection/TranslationEditorCommand';
 import TranslationEditor from './components/TranslationSection/TranslationEditor';
+import { Translation } from '../../core/interfaces/TranslationInterface';
 
 function Editor({ history }: any | HashRouterProps) {
-	const [modeToggle, setModeToggle] = useState('editor');
+	const [modeToggle, setModeToggle] = useState('translations');
 	const currentProject: Project = useAppSelector(
 		(state) => state.settings.projects[state.settings.currentProject]
 	);
 	const dispatch = useAppDispatch();
-	const toggleModeOptions = ['editor', 'translations'];
+	const toggleModeOptions = ['translations', 'editor'];
 	useEffect(() => {
 		if (!currentProject) {
 			window.electron.send('window-open-editor', { window: 'overview' });
 			history.push('/overview');
 		} else {
-			window.electron.on('read-translation-files-return', (event: any, fileTree: TreeNode) => {
-				fileTree.isExpanded = true;
-				dispatch(setFiles(fileTree));
-			});
+			window.electron.on(
+				'read-translation-files-return',
+				(event: any, translations: Translation) => {
+					dispatch(setTranslations(translations));
+				}
+			);
 
 			window.electron.on('read-directory-tree-return', (event: any, fileTree: TreeNode) => {
 				fileTree.isExpanded = true;
