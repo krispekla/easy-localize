@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import './TranslationEditor.scss';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';

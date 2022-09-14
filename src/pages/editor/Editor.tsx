@@ -99,7 +99,8 @@ function Editor({ history }: any | HashRouterProps) {
 						<SplitterPanel className="splitter-editor">
 							<Splitter layout="vertical" className="" gutterSize={5}>
 								<SplitterPanel className="" size={70}>
-									{modeToggle === 'editor' ? <FileEditor /> : <TranslationEditor />}
+									{/* <FileEditor />  */}
+									{modeToggle === 'editor' ? <></> : <TranslationEditor />}
 								</SplitterPanel>
 								<SplitterPanel className="" size={30}>
 									{modeToggle === 'editor' ? <FileEditorCommand /> : <TranslationEditorCommand />}
