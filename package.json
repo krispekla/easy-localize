@@ -1,116 +1,116 @@
 {
-  "name": "easy-localize",
-  "version": "0.1.0",
-  "private": true,
-  "main": "build/electron/main.js",
-  "author": "krispekla",
-  "description": "Electron application for developers, using translations in frontend projects",
-  "homepage": ".",
-  "scripts": {
-    "dev": "concurrently \"cross-env NODE_ENV=development BROWSER=none yarn react-start\" \"wait-on http://localhost:3000 && npm run electron-watch\"",
-    "electron-build": "tsc --project electron/tsconfig.json",
-    "electron-start": "nodemon --watch 'build/electron'  --exec 'electron .' --inspect=5858",
-    "electron-watch": "tsc-watch --project electron/tsconfig.json --onSuccess \"cross-env NODE_ENV=development npm run electron-start\"",
-    "react-start": "cross-env BROWSER=none craco start",
-    "react-build": "craco build",
-    "react-test": "craco test",
-    "react-eject": "react-scripts eject",
-    "build:production": "cross-env NODE_ENV=production npm run react-build && cross-env NODE_ENV=production npm run electron-build && cross-env NODE_ENV=production electron-builder build -c.extraMetadata.main=build/electron/main.js"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
-      "prettier --write"
-    ]
-  },
-  "build": {
-    "appId": "com.electron.easy-localize",
-    "productName": "easy-localize",
-    "copyright": "Copyright © 2021 Kris Peklaric",
-    "directories": {
-      "buildResources": "public"
-    },
-    "files": [
-      "build/**/*",
-      "node_modules/**/*"
-    ],
-    "extends": null
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ],
-    "overrides": [
-      {
-        "files": [
-          "**/*.ts?(x)"
-        ],
-        "rules": {
-          "@typescript-eslint/no-unused-vars": "warn"
-        }
-      }
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "dependencies": {
-    "@craco/craco": "^6.2.0",
-    "@reduxjs/toolkit": "^1.6.1",
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "@types/jest": "^26.0.15",
-    "@types/node": "^16.6.1",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
-    "@types/react-redux": "^7.1.18",
-    "@types/react-router-dom": "^5.1.8",
-    "husky": "^7.0.1",
-    "lint-staged": "^11.1.2",
-    "prettier": "^2.3.2",
-    "primeicons": "^4.1.0",
-    "primereact": "^6.5.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-hook-form": "^7.12.2",
-    "react-redux": "^7.2.4",
-    "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.3",
-    "react-transition-group": "^4.4.1",
-    "redux": "^4.1.1",
-    "sass": "^1.44.0",
-    "web-vitals": "^1.0.1"
-  },
-  "devDependencies": {
-    "@types/lodash": "^4.14.172",
-    "autoprefixer": "^9.8.6",
-    "concurrently": "^6.2.1",
-    "cross-env": "^7.0.3",
-    "electron": "^13.1.8",
-    "electron-builder": "^22.11.7",
-    "electron-debug": "^3.2.0",
-    "electron-devtools-installer": "git+https://github.com/MarshallOfSound/electron-devtools-installer.git",
-    "nodemon": "^2.0.12",
-    "postcss": "^7.0.36",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.7",
-    "ts-node": "^10.2.0",
-    "tsc-watch": "^4.4.0",
-    "typescript": "^4.1.2",
-    "wait-on": "^6.0.0"
-  }
+	"name": "easy-localize",
+	"version": "0.1.0",
+	"private": true,
+	"main": "build/electron/main.js",
+	"author": "krispekla",
+	"description": "Electron application for developers, using translations in frontend projects",
+	"homepage": ".",
+	"scripts": {
+		"dev": "concurrently \"cross-env NODE_ENV=development BROWSER=none yarn react-start\" \"wait-on http://localhost:3000 && npm run electron-watch\"",
+		"electron-build": "tsc --project electron/tsconfig.json",
+		"electron-start": "nodemon --watch 'build/electron'  --exec 'electron .' --inspect=5858",
+		"electron-watch": "tsc-watch --project electron/tsconfig.json --onSuccess \"cross-env NODE_ENV=development npm run electron-start\"",
+		"react-start": "cross-env BROWSER=none craco start",
+		"react-build": "craco build",
+		"react-test": "craco test",
+		"react-eject": "react-scripts eject",
+		"build:production": "cross-env NODE_ENV=production npm run react-build && cross-env NODE_ENV=production npm run electron-build && cross-env NODE_ENV=production electron-builder build -c.extraMetadata.main=build/electron/main.js"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
+	},
+	"lint-staged": {
+		"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+			"prettier --write"
+		]
+	},
+	"build": {
+		"appId": "com.electron.easy-localize",
+		"productName": "easy-localize",
+		"copyright": "Copyright © 2021 Kris Peklaric",
+		"directories": {
+			"buildResources": "public"
+		},
+		"files": [
+			"build/**/*",
+			"node_modules/**/*"
+		],
+		"extends": null
+	},
+	"eslintConfig": {
+		"extends": [
+			"react-app",
+			"react-app/jest"
+		],
+		"overrides": [
+			{
+				"files": [
+					"**/*.ts?(x)"
+				],
+				"rules": {
+					"@typescript-eslint/no-unused-vars": "warn"
+				}
+			}
+		]
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	},
+	"dependencies": {
+		"@craco/craco": "^6.2.0",
+		"@reduxjs/toolkit": "^1.6.1",
+		"@testing-library/jest-dom": "^5.11.4",
+		"@testing-library/react": "^11.1.0",
+		"@testing-library/user-event": "^12.1.10",
+		"@types/jest": "^26.0.15",
+		"@types/node": "^16.6.1",
+		"@types/react": "^17.0.0",
+		"@types/react-dom": "^17.0.0",
+		"@types/react-redux": "^7.1.18",
+		"@types/react-router-dom": "^5.1.8",
+		"husky": "^7.0.1",
+		"lint-staged": "^11.1.2",
+		"prettier": "^2.3.2",
+		"primeicons": "^5.0.0",
+		"primereact": "^7",
+		"react": "^17.0.2",
+		"react-dom": "^17.0.2",
+		"react-hook-form": "^7.12.2",
+		"react-redux": "^7.2.4",
+		"react-router-dom": "^5.2.0",
+		"react-scripts": "4.0.3",
+		"react-transition-group": "^4.4.1",
+		"redux": "^4.1.1",
+		"sass": "^1.44.0",
+		"web-vitals": "^1.0.1"
+	},
+	"devDependencies": {
+		"@types/lodash": "^4.14.172",
+		"autoprefixer": "^9.8.6",
+		"concurrently": "^6.2.1",
+		"cross-env": "^7.0.3",
+		"electron": "^13.1.8",
+		"electron-builder": "^22.11.7",
+		"electron-debug": "^3.2.0",
+		"electron-devtools-installer": "git+https://github.com/MarshallOfSound/electron-devtools-installer.git",
+		"nodemon": "^2.0.12",
+		"postcss": "^7.0.36",
+		"tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.7",
+		"ts-node": "^10.2.0",
+		"tsc-watch": "^4.4.0",
+		"typescript": "^4.1.2",
+		"wait-on": "^6.0.0"
+	}
 }

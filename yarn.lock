@@ -10410,15 +10410,15 @@ pretty-hrtime@^1.0.3:
   resolved "https://registry.yarnpkg.com/pretty-hrtime/-/pretty-hrtime-1.0.3.tgz#b7e3ea42435a4c9b2759d99e0f201eb195802ee1"
   integrity sha1-t+PqQkNaTJsnWdmeDyAesZWALuE=
 
-primeicons@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/primeicons/-/primeicons-4.1.0.tgz#19eaef8ef5594b0006358ae64e738d03e167c9bb"
-  integrity sha512-uEv2pSPk1zQCfaB2VgnUfnUxxlGryYi+5rbdxmZBBt5v9S/pscIQYS5YDLxsQZ7D9jn5c76+Tx5wX/2J1nK6sA==
+primeicons@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/primeicons/-/primeicons-5.0.0.tgz#73a0b6028a77c58a9eeb331ad13aaf085e8451ee"
+  integrity sha512-heygWF0X5HFI1otlZE62pp6ye7sZ8om78J9au2BRkg8O7Y8AHTZ9qKMRzchZUHLe8zUAvdi6hZzzm9XxgwIExw==
 
-primereact@^6.5.0:
-  version "6.6.0"
-  resolved "https://registry.yarnpkg.com/primereact/-/primereact-6.6.0.tgz#9a6915101bc2fa1fe6d6d6ef8e554aa85d062e5b"
-  integrity sha512-onoowjhlOz9Kcjna1DYEKWTGjKah4MjqZchm9E3BkcWjeXoCLv3F5QnIo8eVF9q+xymEK/6Oh7zHlfCJYyWwDw==
+primereact@^7:
+  version "7.2.1"
+  resolved "https://registry.yarnpkg.com/primereact/-/primereact-7.2.1.tgz#2464ede90c96061d0a39c92dbfc839dc363619a0"
+  integrity sha512-7GU8ZyPbP3yDd53X4hmJpz/162c8iM4dGVGZTUo5er1kHAtNJpvelXrcPaN3ELrTIF7VH4LCxpTsqHvTxn0EsQ==
 
 process-nextick-args@~2.0.0:
   version "2.0.1"
