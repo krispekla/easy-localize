@@ -74,7 +74,7 @@ function TranslationEditor() {
 	const renderColumns = languages.map((item) => (
 		<Column
 			key={item.alpha2}
-			style={{ minWwidth: '100px' }}
+			style={{ width: '320px' }}
 			field={item.alpha2}
 			header={`${item.language} (${item.alpha2})`}
 			editor={(props) => codeEditor(item.alpha2, props)}></Column>
@@ -86,13 +86,16 @@ function TranslationEditor() {
 				style={{ width: '100%', height: '100%', overflow: 'scroll' }}
 				value={translationData}
 				editMode="cell"
-				className="mt-4"
+				className="	mt-0"
 				resizableColumns
+				scrollable
+				scrollHeight="600px"
+				virtualScrollerOptions={{ itemSize: 46 }}
 				columnResizeMode="expand"
 				showGridlines
 				reorderableColumns>
 				<Column
-					style={{ minWwidth: '60px' }}
+					style={{ width: '320px' }}
 					field="id"
 					header="ID"
 					editor={(props) => codeEditor('products1', props)}></Column>
