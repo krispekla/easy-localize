@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState, MutableRefObject } from 'react';
 import './TranslationEditor.scss';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -6,43 +6,19 @@ import { InputText } from 'primereact/inputtext';
 import { useAppSelector } from '../../../../redux/hooks';
 import { Language } from '../../../../core/interfaces/LanguageInterface';
 import { Translation } from '../../../../core/interfaces/TranslationInterface';
+import { ContextMenu } from 'primereact/contextmenu';
 
 function TranslationEditor() {
-	const inputTextEditor = (
-		productKey: any,
-		props: { rowData: { [x: string]: any } },
-		field: string
-	) => {
-		return (
-			<InputText
-				type="text"
-				value={props.rowData[field]}
-				onChange={(e: { target: { value: any } }) =>
-					onEditorValueChange(productKey, props, e.target.value)
-				}
-			/>
-		);
-	};
-
-	const codeEditor = (productKey: any, props: any) => {
-		return inputTextEditor(productKey, props, props.field);
-	};
-	const onEditorValueChange = (
-		productKey: any,
-		props: { rowData?: { [x: string]: any }; value?: any; rowIndex?: any; field?: any },
-		value: any
-	) => {
-		let updatedProducts = [...props.value];
-		updatedProducts[props.rowIndex][props.field] = value;
-	};
-
+	const translationTableRef = useRef() as MutableRefObject<DataTable>;
+	const cm = useRef() as MutableRefObject<ContextMenu>;
 	const [translationData, setTranslationData] = useState<any[]>([]);
+	const [selectedTranslation, setSelectedTranslation] = useState(null);
 	const translations: Translation = useAppSelector(
 		(state) => state.files.translations as Translation
 	);
 
 	const fillData = useCallback(() => {
-		if (!translations) setTranslationData([]);
+		if (!translations) return setTranslationData([]);
 		const filledTranslations = [];
 		for (const [key, value] of Object.entries(translations)) {
 			const temp: { [key: string]: String } = {
@@ -68,6 +44,41 @@ function TranslationEditor() {
 		}
 		return languages.sort((a) => (a.alpha2 !== defaultLanguage?.alpha2 ? 1 : -1));
 	});
+	const menuModel = [
+		{
+			label: 'Add',
+			icon: 'pi pi-fw pi-plus',
+			command: () => {
+				// return viewProduct(selectedProduct)
+			},
+		},
+		{
+			label: 'Edit',
+			icon: 'pi pi-fw pi-pencil',
+			command: () => {
+				// return viewProduct(selectedProduct)
+			},
+		},
+		{
+			label: 'Delete',
+			icon: 'pi pi-fw pi-trash',
+			command: () => {
+				// return deleteProduct(selectedProduct)
+			},
+		},
+	];
+
+	// const viewProduct = (product) => {
+	// 	toast.current.show({ severity: 'info', summary: 'Product Selected', detail: product.name });
+	// };
+
+	// const deleteProduct = (product) => {
+	// 	let _products = [...products];
+	// 	_products = _products.filter((p) => p.id !== product.id);
+
+	// 	toast.current.show({ severity: 'error', summary: 'Product Deleted', detail: product.name });
+	// 	setProducts(_products);
+	// };
 
 	const renderColumns = languages.map((item) => (
 		<Column
@@ -80,10 +91,17 @@ function TranslationEditor() {
 
 	return (
 		<>
+			<ContextMenu model={menuModel} ref={cm} onHide={() => setSelectedTranslation(null)} />
 			<DataTable
+				ref={translationTableRef}
 				style={{ width: '100%', height: '100%', overflow: 'scroll' }}
 				value={translationData}
-				editMode="cell"
+				selectionMode="single"
+				selection={selectedTranslation}
+				onContextMenuSelectionChange={(e) => setSelectedTranslation(e.value)}
+				onContextMenu={(e) => cm.current.show(e.originalEvent)}
+				// onRowDoubleClick={(e) => exportCSV()}
+				onSelectionChange={(e) => setSelectedTranslation(e.value)}
 				className="	mt-0"
 				resizableColumns
 				scrollable
@@ -92,11 +110,7 @@ function TranslationEditor() {
 				columnResizeMode="expand"
 				showGridlines
 				reorderableColumns>
-				<Column
-					style={{ width: '320px' }}
-					field="id"
-					header="ID"
-					editor={(props) => codeEditor('products1', props)}></Column>
+				<Column style={{ width: '320px' }} field="id" header="ID" />
 				{renderColumns}
 			</DataTable>
 		</>
