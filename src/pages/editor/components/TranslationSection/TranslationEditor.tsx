@@ -42,10 +42,7 @@ function TranslationEditor() {
 	);
 
 	const fillData = useCallback(() => {
-		if (!translations) {
-			return [];
-		}
-
+		if (!translations) setTranslationData([]);
 		const filledTranslations = [];
 		for (const [key, value] of Object.entries(translations)) {
 			const temp: { [key: string]: String } = {
@@ -91,7 +88,7 @@ function TranslationEditor() {
 				resizableColumns
 				scrollable
 				scrollHeight="600px"
-				virtualScrollerOptions={{ itemSize: 46 }}
+				virtualScrollerOptions={{ itemSize: 20 }}
 				columnResizeMode="expand"
 				showGridlines
 				reorderableColumns>
