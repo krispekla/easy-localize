@@ -7,8 +7,9 @@ import { useAppSelector } from '../../../../redux/hooks';
 import { Language } from '../../../../core/interfaces/LanguageInterface';
 import { Translation } from '../../../../core/interfaces/TranslationInterface';
 import { ContextMenu } from 'primereact/contextmenu';
-import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
+import TranslationDialogEnum from '../../../../core/enums/TranslationDialogEnum';
+import TranslationDialog from './TranslationDialog';
 
 function TranslationEditor() {
 	const translationTableRef = useRef() as MutableRefObject<DataTable>;
@@ -19,7 +20,9 @@ function TranslationEditor() {
 	const translations: Translation = useAppSelector(
 		(state) => state.files.translations as Translation
 	);
-
+	const [translationDialogType, setTranslationDialogType] = useState<TranslationDialogEnum>(
+		TranslationDialogEnum.add
+	);
 	const fillData = useCallback(() => {
 		if (!translations) return setTranslationData([]);
 		const filledTranslations = [];
@@ -90,24 +93,12 @@ function TranslationEditor() {
 			field={item.alpha2}
 			header={`${item.language} (${item.alpha2})`}></Column>
 	));
-	const exportCSV = () => {
-		translationTableRef.current.exportCSV();
-	};
+	// const exportCSV = () => {
+	// 	translationTableRef.current.exportCSV();
+	// };
 	const hideEditDialog = () => {
 		setShowEditDialog(false);
 	};
-
-	const productDialogFooter = (
-		<React.Fragment>
-			<Button
-				label="Cancel"
-				icon="pi pi-times"
-				className="p-button-text"
-				onClick={(e) => setShowEditDialog(false)}
-			/>
-			<Button label="Save" icon="pi pi-check" className="p-button-text" />
-		</React.Fragment>
-	);
 
 	return (
 		<>
@@ -120,10 +111,9 @@ function TranslationEditor() {
 				selection={selectedTranslation}
 				onContextMenuSelectionChange={(e) => setSelectedTranslation(e.value)}
 				onContextMenu={(e) => cm.current.show(e.originalEvent)}
-				// onRowDoubleClick={(e) => exportCSV()}
 				onRowDoubleClick={(e) => setShowEditDialog(true)}
 				onSelectionChange={(e) => setSelectedTranslation(e.value)}
-				className="	mt-0"
+				className="mt-0"
 				resizableColumns
 				scrollable
 				scrollHeight="600px"
@@ -134,39 +124,14 @@ function TranslationEditor() {
 				<Column style={{ width: '320px' }} field="id" header="ID" />
 				{renderColumns}
 			</DataTable>
-			<Dialog
-				visible={showEditDialog}
-				style={{ width: '450px' }}
-				header="Product Details"
-				modal
-				className="p-fluid"
-				footer={productDialogFooter}
-				onHide={hideEditDialog}>
-				Test 123
-				{/* <div className="field">
-					<label htmlFor="name">Name</label>
-					<InputText
-						id="name"
-						value={product.name}
-						onChange={(e) => onInputChange(e, 'name')}
-						required
-						autoFocus
-						className={classNames({ 'p-invalid': submitted && !product.name })}
-					/>
-					{submitted && !product.name && <small className="p-error">Name is required.</small>}
-				</div>
-				<div className="field">
-					<label htmlFor="description">Description</label>
-					<InputTextarea
-						id="description"
-						value={product.description}
-						onChange={(e) => onInputChange(e, 'description')}
-						required
-						rows={3}
-						cols={20}
-					/>
-				</div> */}
-			</Dialog>
+			{showEditDialog && (
+				<TranslationDialog
+					displayDialog={showEditDialog}
+					setDisplayDialog={setShowEditDialog}
+					translation={selectedTranslation}
+					type={translationDialogType}
+				/>
+			)}
 		</>
 	);
 }

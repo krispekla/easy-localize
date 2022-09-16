@@ -2,7 +2,6 @@ function TranslationEditorCommand() {
 	return (
 		<div className="translation-editor-command  pl-3 pt-2">
 			<h1 className="mb-3 text-gray-200">Commands</h1>
-
 			<div className="flex justify-end">
 				<button className="mt-1 mr-5 px-3 h-10 text-sm text-white bg-red-600 hover:bg-red-500 rounded-md shadow-md hover:shadow-lg uppercase">
 					Delete translation
