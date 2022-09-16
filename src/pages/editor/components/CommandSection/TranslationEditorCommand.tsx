@@ -7,12 +7,14 @@ function TranslationEditorCommand() {
 
 			<div className="absolute bottom-5 left-15">
 				<button className="mt-1 mr-5 px-3 h-10 text-sm text-white bg-queenBlue hover:bg-queenBlueHover rounded-md shadow-md hover:shadow-lg uppercase">
-					Add ID
+					Add new
 				</button>
 				<button className="mt-1 mr-5 px-3 h-10 text-sm text-white bg-queenBlue hover:bg-queenBlueHover rounded-md shadow-md hover:shadow-lg uppercase">
 					Revert all ID instances to text
 				</button>
-				<button className="mt-1 mr-5 px-3 h-10 text-sm text-white bg-queenBlue hover:bg-queenBlueHover rounded-md shadow-md hover:shadow-lg uppercase">
+				<button
+					disabled
+					className="mt-1 mr-5 px-3 h-10 text-sm text-white bg-gray-500 rounded-md  uppercase">
 					Import CSV
 				</button>
 				<button className="mt-1 px-3 h-10 text-sm text-white bg-queenBlue hover:bg-queenBlueHover rounded-md shadow-md hover:shadow-lg uppercase">
@@ -20,11 +22,11 @@ function TranslationEditorCommand() {
 				</button>
 			</div>
 			<div className="absolute bottom-5 right-5">
-				<button className="mt-1 mr-5 px-3 h-10 text-sm text-white bg-gray-500 hover:bg-gray-400 rounded-md shadow-md hover:shadow-lg uppercase">
-					Cancel
+				<button className="mt-1 mr-5 px-3 h-10 text-sm text-white bg-queenBlue hover:bg-queenBlueHover rounded-md shadow-md hover:shadow-lg uppercase">
+					Reset changes
 				</button>
 				<button className="mt-1 px-3 h-10 text-sm text-white bg-queenBlue hover:bg-queenBlueHover rounded-md shadow-md hover:shadow-lg uppercase">
-					Save
+					Save changes
 				</button>
 			</div>
 		</div>
