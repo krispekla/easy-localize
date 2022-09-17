@@ -10,11 +10,13 @@ import { ContextMenu } from 'primereact/contextmenu';
 import { Button } from 'primereact/button';
 import TranslationDialogEnum from '../../../../core/enums/TranslationDialogEnum';
 import TranslationDialog from './TranslationDialog';
+import { cloneDeep } from 'lodash';
 
 function TranslationEditor() {
 	const translationTableRef = useRef() as MutableRefObject<DataTable>;
 	const cm = useRef() as MutableRefObject<ContextMenu>;
 	const [translationData, setTranslationData] = useState<any[]>([]);
+	const [updatedIds, setUpdatedIds] = useState<any[]>([]);
 	const [selectedTranslation, setSelectedTranslation] = useState({});
 	const [showEditDialog, setShowEditDialog] = useState(false);
 	const translations: Translation = useAppSelector(
@@ -55,6 +57,8 @@ function TranslationEditor() {
 			label: 'Add',
 			icon: 'pi pi-fw pi-plus',
 			command: () => {
+				setTranslationDialogType(TranslationDialogEnum.add);
+				setShowEditDialog(true);
 				// return viewProduct(selectedProduct)
 			},
 		},
@@ -62,6 +66,8 @@ function TranslationEditor() {
 			label: 'Edit',
 			icon: 'pi pi-fw pi-pencil',
 			command: () => {
+				setTranslationDialogType(TranslationDialogEnum.edit);
+				setShowEditDialog(true);
 				// return viewProduct(selectedProduct)
 			},
 		},
@@ -99,6 +105,23 @@ function TranslationEditor() {
 	const hideEditDialog = () => {
 		setShowEditDialog(false);
 	};
+	const onTranslationUpdate = (translation: { [key: string]: String }) => {
+		const translations = cloneDeep(translationData);
+		if (translationDialogType === TranslationDialogEnum.add) {
+			translations.push(translation);
+			setUpdatedIds((prev) => [...prev, translation.id]);
+		} else {
+			translations.forEach((item, index) => {
+				if (translation.id === item.id) {
+					translations[index] = translation;
+					if (!updatedIds.some((x) => x === translation.id)) {
+						setUpdatedIds((prev) => [...prev, translation.id]);
+					}
+				}
+			});
+		}
+		setTranslationData(translations);
+	};
 
 	return (
 		<>
@@ -130,6 +153,8 @@ function TranslationEditor() {
 					setDisplayDialog={setShowEditDialog}
 					translation={selectedTranslation}
 					type={translationDialogType}
+					update={onTranslationUpdate}
+					languages={languages}
 				/>
 			)}
 		</>

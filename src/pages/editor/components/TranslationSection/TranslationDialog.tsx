@@ -1,3 +1,4 @@
+import { update } from 'lodash';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
@@ -8,6 +9,8 @@ export interface TranslationDialogInterface {
 	type: TranslationDialogEnum;
 	displayDialog: boolean;
 	setDisplayDialog: any;
+	update: Function;
+	languages: Array<{}>;
 }
 
 export type Translation = {
@@ -29,11 +32,25 @@ const TranslationDialog = (props: TranslationDialogInterface) => {
 	};
 
 	const setId = (translation: { [key: string]: String }) => translation.id;
-
-	let formDefaultValues: any = {
-		id: setId(props.translation),
-		translation: setTranslationAsArrayAndCopy(props.translation),
+	const getLanguages = (translation: Array<{}>) => {
+		return translation.map((x: any) => {
+			return {
+				name: x.alpha2,
+				value: '',
+			};
+		});
 	};
+
+	let formDefaultValues: any =
+		props.type === TranslationDialogEnum.edit && props.translation
+			? {
+					id: setId(props.translation),
+					translation: setTranslationAsArrayAndCopy(props.translation),
+			  }
+			: {
+					id: '',
+					translation: getLanguages(props.languages),
+			  };
 
 	const {
 		handleSubmit,
@@ -64,8 +81,16 @@ const TranslationDialog = (props: TranslationDialogInterface) => {
 		} else if (props.type === TranslationDialogEnum.edit) {
 			//    Izvrsi proslijedeni callback u parentu
 		}
-		// resetState();
-		// props.setDisplayDialog(false);
+		const prepareTranslationForUpdate: { [key: string]: String } = {
+			id: data.id,
+		};
+		for (const item of Object.values(data.translation)) {
+			// @ts-ignore
+			prepareTranslationForUpdate[item.name] = item.value;
+		}
+		resetState();
+		props.setDisplayDialog(false);
+		props.update(prepareTranslationForUpdate);
 	};
 
 	const renderDialogAddNewFooter = () => {
