@@ -100,7 +100,12 @@ function Editor({ history }: any | HashRouterProps) {
 							<Splitter layout="vertical" className="" gutterSize={5}>
 								<SplitterPanel className="" size={70}>
 									{/* <FileEditor />  */}
-									{modeToggle === 'editor' ? <></> : <TranslationEditor />}
+									<div className={modeToggle === 'editor' ? 'hidden' : 'block'}>
+										{<TranslationEditor />}
+									</div>
+									<div className={modeToggle === 'editor' ? 'block' : 'hidden'}>
+										{<FileEditor />}
+									</div>
 								</SplitterPanel>
 								<SplitterPanel className="" size={30}>
 									{modeToggle === 'editor' ? <FileEditorCommand /> : <TranslationEditorCommand />}

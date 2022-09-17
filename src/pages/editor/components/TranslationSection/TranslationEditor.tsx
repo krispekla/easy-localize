@@ -134,7 +134,10 @@ function TranslationEditor() {
 				selection={selectedTranslation}
 				onContextMenuSelectionChange={(e) => setSelectedTranslation(e.value)}
 				onContextMenu={(e) => cm.current.show(e.originalEvent)}
-				onRowDoubleClick={(e) => setShowEditDialog(true)}
+				onRowDoubleClick={(e) => {
+					setTranslationDialogType(TranslationDialogEnum.edit);
+					setShowEditDialog(true);
+				}}
 				onSelectionChange={(e) => setSelectedTranslation(e.value)}
 				className="mt-0"
 				resizableColumns
