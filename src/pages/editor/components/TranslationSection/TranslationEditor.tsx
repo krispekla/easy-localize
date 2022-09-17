@@ -15,7 +15,7 @@ function TranslationEditor() {
 	const translationTableRef = useRef() as MutableRefObject<DataTable>;
 	const cm = useRef() as MutableRefObject<ContextMenu>;
 	const [translationData, setTranslationData] = useState<any[]>([]);
-	const [selectedTranslation, setSelectedTranslation] = useState(null);
+	const [selectedTranslation, setSelectedTranslation] = useState({});
 	const [showEditDialog, setShowEditDialog] = useState(false);
 	const translations: Translation = useAppSelector(
 		(state) => state.files.translations as Translation
@@ -102,7 +102,7 @@ function TranslationEditor() {
 
 	return (
 		<>
-			<ContextMenu model={menuModel} ref={cm} onHide={() => setSelectedTranslation(null)} />
+			<ContextMenu model={menuModel} ref={cm} onHide={() => setSelectedTranslation({})} />
 			<DataTable
 				ref={translationTableRef}
 				style={{ width: '100%', height: '100%', overflow: 'scroll' }}

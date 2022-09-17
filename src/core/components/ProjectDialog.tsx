@@ -185,7 +185,7 @@ const ProjectDialog = (props: ProjectDialogInterface) => {
 	return (
 		<>
 			<Dialog
-				header={ `${props.type === ProjectDialogEnum.add ? 'Add new' : 'Update'} project`}
+				header={`${props.type === ProjectDialogEnum.add ? 'Add new' : 'Update'} project`}
 				visible={props.displayDialog}
 				style={{ width: '90vw' }}
 				draggable={false}

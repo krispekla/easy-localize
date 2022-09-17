@@ -1,14 +1,10 @@
-import React, { useState, useEffect } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
-import { cloneDeep } from 'lodash';
-import { addProject, updateProject } from '../../../../redux/slices/settingsSlice';
-import { useAppDispatch } from '../../../../redux/hooks';
 import TranslationDialogEnum from '../../../../core/enums/TranslationDialogEnum';
 
 export interface TranslationDialogInterface {
-	translation: any;
+	translation: {};
 	type: TranslationDialogEnum;
 	displayDialog: boolean;
 	setDisplayDialog: any;
@@ -16,49 +12,40 @@ export interface TranslationDialogInterface {
 
 export type Translation = {
 	id: string;
-
-	name: string;
-	src: string;
-	isPinned: boolean;
-	translationFolder?: string;
+	translation: object;
 };
 
 const TranslationDialog = (props: TranslationDialogInterface) => {
-	// let formDefaultValues: Project =
-	// 	props.type === ProjectDialogEnum.edit && props.project
-	// 		? cloneDeep<Project>(props.project)
-	// 		: {
-	// 				name: '',
-	// 				src: '',
-	// 				isPinned: false,
-	// 				translationFolder: '',
-	// 				languages: [],
-	// 				defaultLanguage: null,
-	// 				projectType: ProjectType[1],
-	// 				excludedFolders: [],
-	// 		  };
+	const setTranslationAsArrayAndCopy = (translation: any) => {
+		const proccessedTranslation = [];
+		for (const [key, value] of Object.entries(translation)) {
+			if (key === 'id') continue;
+			proccessedTranslation.push({
+				name: key,
+				value: value,
+			});
+		}
+		return proccessedTranslation;
+	};
+
+	const setId = (translation: { [key: string]: String }) => translation.id;
+
+	let formDefaultValues: any = {
+		id: setId(props.translation),
+		translation: setTranslationAsArrayAndCopy(props.translation),
+	};
 
 	const {
-		register,
 		handleSubmit,
-		watch,
-		setValue,
-		getValues,
-		trigger,
 		formState: { errors },
 		control,
-		reset,
 	} = useForm<any>({
-		defaultValues: { test: [] },
+		defaultValues: { ...formDefaultValues },
 	});
-
-	const { fields, append, prepend, remove, swap, move, insert, replace } = useFieldArray<any>({
-		control,
-		name: 'test',
+	const { fields } = useFieldArray({
+		control, // control props comes from useForm (optional: if you are using FormContext)
+		name: 'translation', // unique name for your Field Array
 	});
-
-	const dispatch = useAppDispatch();
-	useEffect(() => {}, []);
 
 	function resetState() {
 		// TODO Dohvati sve jezike
@@ -77,8 +64,8 @@ const TranslationDialog = (props: TranslationDialogInterface) => {
 		} else if (props.type === TranslationDialogEnum.edit) {
 			//    Izvrsi proslijedeni callback u parentu
 		}
-		resetState();
-		props.setDisplayDialog(false);
+		// resetState();
+		// props.setDisplayDialog(false);
 	};
 
 	const renderDialogAddNewFooter = () => {
@@ -105,7 +92,6 @@ const TranslationDialog = (props: TranslationDialogInterface) => {
 			</div>
 		);
 	};
-
 	return (
 		<>
 			<Dialog
@@ -114,7 +100,6 @@ const TranslationDialog = (props: TranslationDialogInterface) => {
 				draggable={false}
 				footer={renderDialogAddNewFooter()}
 				onHide={() => onHideDialog()}>
-				{props.translation && props.translation}
 				<div className="flex flex-col">
 					<div className="flex flex-row items-center">
 						<label htmlFor="projectName" className="mr-3">
@@ -139,22 +124,34 @@ const TranslationDialog = (props: TranslationDialogInterface) => {
 					</div>
 					{errors['id'] && <small className="p-error ml-8">{errors['id'].message}</small>}
 				</div>
-				<ul>
-					{fields &&
-						fields.map((item, index) => {
-							return (
-								<li key={index}>
-									<input {...register(`${index}`)} />
-									{item}
-									{/* <Controller
-									render={({ field }) => <input {...field} />}
-									name={`test.${index}`}
+				{fields.map((item: any, index) => {
+					return (
+						<div className="flex flex-col" key={item.id}>
+							<div className="flex flex-row items-center">
+								<Controller
+									name={`translation.${index}.value`}
 									control={control}
-								/> */}
-								</li>
-							);
-						})}
-				</ul>
+									render={({ field, fieldState }) => (
+										<>
+											<label htmlFor="projectName" className="mr-3">
+												{item.name.toUpperCase()}:
+											</label>
+											<InputText
+												id={field.name}
+												{...field}
+												autoFocus
+												value={field.value}
+												className={`mr-3 w-72 h-10 my-2 ${
+													fieldState.invalid && fieldState.isTouched && 'border-red-400'
+												}`}
+											/>
+										</>
+									)}
+								/>
+							</div>
+						</div>
+					);
+				})}
 			</Dialog>
 		</>
 	);
