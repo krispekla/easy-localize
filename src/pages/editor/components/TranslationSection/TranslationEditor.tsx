@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState, MutableRefObject } from 'react';
+import { useCallback, useEffect, useRef, MutableRefObject } from 'react';
 import './TranslationEditor.scss';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -7,7 +7,7 @@ import { Translation } from '../../../../core/interfaces/TranslationInterface';
 import { ContextMenu } from 'primereact/contextmenu';
 import TranslationDialogEnum from '../../../../core/enums/TranslationDialogEnum';
 import TranslationDialog from './TranslationDialog';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isEmpty } from 'lodash';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
 	setTranslationData,
@@ -15,6 +15,7 @@ import {
 	setSelectedTranslation,
 	setShowEditDialog,
 	setTranslationDialogType,
+	deleteTranslation,
 } from '../../../../redux/slices/filesSlice';
 
 function TranslationEditor() {
@@ -66,7 +67,6 @@ function TranslationEditor() {
 			command: () => {
 				dispatch(setTranslationDialogType(TranslationDialogEnum.add));
 				dispatch(setShowEditDialog(true));
-				// return viewProduct(selectedProduct)
 			},
 		},
 		{
@@ -75,29 +75,19 @@ function TranslationEditor() {
 			command: () => {
 				dispatch(setTranslationDialogType(TranslationDialogEnum.edit));
 				dispatch(setShowEditDialog(true));
-				// return viewProduct(selectedProduct)
 			},
 		},
 		{
 			label: 'Delete',
 			icon: 'pi pi-fw pi-trash',
 			command: () => {
-				// return deleteProduct(selectedProduct)
+				if (isEmpty(selectedTranslation)) {
+					return;
+				}
+				dispatch(deleteTranslation());
 			},
 		},
 	];
-
-	// const viewProduct = (product) => {
-	// 	toast.current.show({ severity: 'info', summary: 'Product Selected', detail: product.name });
-	// };
-
-	// const deleteProduct = (product) => {
-	// 	let _products = [...products];
-	// 	_products = _products.filter((p) => p.id !== product.id);
-
-	// 	toast.current.show({ severity: 'error', summary: 'Product Deleted', detail: product.name });
-	// 	setProducts(_products);
-	// };
 
 	const renderColumns = languages.map((item) => (
 		<Column
@@ -127,6 +117,7 @@ function TranslationEditor() {
 				}
 			});
 		}
+		dispatch(setSelectedTranslation({}));
 		dispatch(setTranslationData(translations));
 	};
 
@@ -160,7 +151,6 @@ function TranslationEditor() {
 			{showEditDialog && (
 				<TranslationDialog
 					displayDialog={showEditDialog}
-					setDisplayDialog={dispatch(setShowEditDialog)}
 					translation={selectedTranslation}
 					type={translationDialogType}
 					update={onTranslationUpdate}

@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { isEmpty } from 'lodash';
 import TranslationDialogEnum from '../../core/enums/TranslationDialogEnum';
 import { FileTreeInterface } from '../../core/interfaces/FileTreeInterface';
 import { Translation } from '../../core/interfaces/TranslationInterface';
@@ -58,6 +59,15 @@ const filesSlice = createSlice({
 		setTranslationDialogType(state, action: PayloadAction<TranslationDialogEnum>) {
 			state.translationDialogType = action.payload;
 		},
+		deleteTranslation(state) {
+			if (isEmpty(state.selectedTranslation)) return;
+			const translationsWithRemoved = state.translationData.filter(
+				// @ts-ignore
+				(x) => x.id !== state.selectedTranslation.id
+			);
+			state.selectedTranslation = {};
+			state.translationData = translationsWithRemoved;
+		},
 	},
 });
 
@@ -71,6 +81,7 @@ export const {
 	setSelectedTranslation,
 	setShowEditDialog,
 	setTranslationDialogType,
+	deleteTranslation,
 } = filesSlice.actions;
 
 export default filesSlice.reducer;

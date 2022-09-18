@@ -1,14 +1,13 @@
-import { update } from 'lodash';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import TranslationDialogEnum from '../../../../core/enums/TranslationDialogEnum';
-
+import { useAppDispatch } from '../../../../redux/hooks';
+import { setShowEditDialog } from '../../../../redux/slices/filesSlice';
 export interface TranslationDialogInterface {
 	translation: {};
 	type: TranslationDialogEnum;
 	displayDialog: boolean;
-	setDisplayDialog: any;
 	update: Function;
 	languages: Array<{}>;
 }
@@ -19,6 +18,8 @@ export type Translation = {
 };
 
 const TranslationDialog = (props: TranslationDialogInterface) => {
+	const dispatch = useAppDispatch();
+
 	const setTranslationAsArrayAndCopy = (translation: any) => {
 		const proccessedTranslation = [];
 		for (const [key, value] of Object.entries(translation)) {
@@ -72,7 +73,7 @@ const TranslationDialog = (props: TranslationDialogInterface) => {
 
 	const onHideDialog = () => {
 		resetState();
-		props.setDisplayDialog(false);
+		dispatch(setShowEditDialog(false));
 	};
 
 	const onConfirmDialog = (data: any) => {
@@ -89,7 +90,7 @@ const TranslationDialog = (props: TranslationDialogInterface) => {
 			prepareTranslationForUpdate[item.name] = item.value;
 		}
 		resetState();
-		props.setDisplayDialog(false);
+		dispatch(setShowEditDialog(false));
 		props.update(prepareTranslationForUpdate);
 	};
 
