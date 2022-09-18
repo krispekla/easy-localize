@@ -3,6 +3,7 @@ import {
 	setShowEditDialog,
 	setTranslationDialogType,
 	deleteTranslation,
+	exportCSV,
 } from '../../../../redux/slices/filesSlice';
 import { isEmpty } from 'lodash';
 import TranslationDialogEnum from '../../../../core/enums/TranslationDialogEnum';
@@ -28,6 +29,9 @@ function TranslationEditorCommand() {
 			return;
 		}
 		dispatch(deleteTranslation());
+	}
+	function onExportCSVHandler() {
+		dispatch(exportCSV());
 	}
 	return (
 		<div className="translation-editor-command  pl-3 pt-2">
@@ -62,7 +66,9 @@ function TranslationEditorCommand() {
 					className="mt-1 mr-5 px-3 h-10 text-sm text-white bg-gray-500 rounded-md  uppercase">
 					Import CSV
 				</button>
-				<button className="mt-1 px-3 h-10 text-sm text-white bg-queenBlue hover:bg-queenBlueHover rounded-md shadow-md hover:shadow-lg uppercase">
+				<button
+					className="mt-1 px-3 h-10 text-sm text-white bg-queenBlue hover:bg-queenBlueHover rounded-md shadow-md hover:shadow-lg uppercase"
+					onClick={() => onExportCSVHandler()}>
 					Export to CSV
 				</button>
 			</div>

@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { isEmpty } from 'lodash';
+import { DataTable } from 'primereact/datatable';
+import { MutableRefObject } from 'react';
 import TranslationDialogEnum from '../../core/enums/TranslationDialogEnum';
 import { FileTreeInterface } from '../../core/interfaces/FileTreeInterface';
 import { Translation } from '../../core/interfaces/TranslationInterface';
@@ -14,6 +16,7 @@ const initialState: FileTreeInterface = {
 	updatedIds: [],
 	showEditDialog: false,
 	translationDialogType: TranslationDialogEnum.add,
+	translationTableRef: null,
 };
 
 const filesSlice = createSlice({
@@ -68,6 +71,12 @@ const filesSlice = createSlice({
 			state.selectedTranslation = {};
 			state.translationData = translationsWithRemoved;
 		},
+		setTranslationTableRef(state, action: PayloadAction<any>) {
+			state.translationTableRef = action.payload;
+		},
+		exportCSV(state) {
+			state.translationTableRef?.current.exportCSV();
+		},
 	},
 });
 
@@ -82,6 +91,8 @@ export const {
 	setShowEditDialog,
 	setTranslationDialogType,
 	deleteTranslation,
+	setTranslationTableRef,
+	exportCSV,
 } = filesSlice.actions;
 
 export default filesSlice.reducer;

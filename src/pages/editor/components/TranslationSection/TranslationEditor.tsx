@@ -16,6 +16,7 @@ import {
 	setShowEditDialog,
 	setTranslationDialogType,
 	deleteTranslation,
+	setTranslationTableRef,
 } from '../../../../redux/slices/filesSlice';
 
 function TranslationEditor() {
@@ -43,6 +44,10 @@ function TranslationEditor() {
 		}
 		dispatch(setTranslationData(filledTranslations));
 	}, [dispatch, translations]);
+
+	useEffect(() => {
+		dispatch(setTranslationTableRef(translationTableRef));
+	}, []);
 
 	useEffect(() => {
 		fillData();
