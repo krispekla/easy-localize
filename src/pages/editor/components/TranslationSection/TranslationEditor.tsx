@@ -26,13 +26,9 @@ function TranslationEditor() {
 	const translationData = useAppSelector((state) => state.files.translationData);
 	const updatedIds = useAppSelector((state) => state.files.updatedIds);
 	const selectedTranslation = useAppSelector((state) => state.files.selectedTranslation);
-	// const [showEditDialog, setShowEditDialog] = useState(false);
 	const showEditDialog = useAppSelector((state) => state.files.showEditDialog);
 	const translationDialogType = useAppSelector((state) => state.files.translationDialogType);
 
-	// const [translationDialogType, setTranslationDialogType] = useState<TranslationDialogEnum>(
-	// 	TranslationDialogEnum.add
-	// );
 	const fillData = useCallback(() => {
 		if (!translations) return dispatch(setTranslationData([]));
 		const filledTranslations = [];
