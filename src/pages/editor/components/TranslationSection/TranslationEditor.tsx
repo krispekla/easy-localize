@@ -18,6 +18,7 @@ import {
 	deleteTranslation,
 	setTranslationTableRef,
 } from '../../../../redux/slices/filesSlice';
+import ProjectDialog from '../../../../core/components/LanguageSettings';
 
 function TranslationEditor() {
 	const dispatch = useAppDispatch();
@@ -46,6 +47,8 @@ function TranslationEditor() {
 	}, [dispatch, translations]);
 
 	useEffect(() => {
+		// TODO Problem when closing ProjectDialog, cleanup ref
+		// is probably problem
 		dispatch(setTranslationTableRef(translationTableRef));
 	}, []);
 
