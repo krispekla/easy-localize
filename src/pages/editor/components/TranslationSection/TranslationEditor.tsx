@@ -2,31 +2,38 @@ import React, { useCallback, useEffect, useRef, useState, MutableRefObject } fro
 import './TranslationEditor.scss';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { InputText } from 'primereact/inputtext';
-import { useAppSelector } from '../../../../redux/hooks';
 import { Language } from '../../../../core/interfaces/LanguageInterface';
 import { Translation } from '../../../../core/interfaces/TranslationInterface';
 import { ContextMenu } from 'primereact/contextmenu';
-import { Button } from 'primereact/button';
 import TranslationDialogEnum from '../../../../core/enums/TranslationDialogEnum';
 import TranslationDialog from './TranslationDialog';
 import { cloneDeep } from 'lodash';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import {
+	setTranslationData,
+	setUpdatedIds,
+	setSelectedTranslation,
+	setShowEditDialog,
+	setTranslationDialogType,
+} from '../../../../redux/slices/filesSlice';
 
 function TranslationEditor() {
+	const dispatch = useAppDispatch();
 	const translationTableRef = useRef() as MutableRefObject<DataTable>;
 	const cm = useRef() as MutableRefObject<ContextMenu>;
-	const [translationData, setTranslationData] = useState<any[]>([]);
-	const [updatedIds, setUpdatedIds] = useState<any[]>([]);
-	const [selectedTranslation, setSelectedTranslation] = useState({});
-	const [showEditDialog, setShowEditDialog] = useState(false);
-	const translations: Translation = useAppSelector(
-		(state) => state.files.translations as Translation
-	);
-	const [translationDialogType, setTranslationDialogType] = useState<TranslationDialogEnum>(
-		TranslationDialogEnum.add
-	);
+	const translations = useAppSelector((state) => state.files.translations as Translation);
+	const translationData = useAppSelector((state) => state.files.translationData);
+	const updatedIds = useAppSelector((state) => state.files.updatedIds);
+	const selectedTranslation = useAppSelector((state) => state.files.selectedTranslation);
+	// const [showEditDialog, setShowEditDialog] = useState(false);
+	const showEditDialog = useAppSelector((state) => state.files.showEditDialog);
+	const translationDialogType = useAppSelector((state) => state.files.translationDialogType);
+
+	// const [translationDialogType, setTranslationDialogType] = useState<TranslationDialogEnum>(
+	// 	TranslationDialogEnum.add
+	// );
 	const fillData = useCallback(() => {
-		if (!translations) return setTranslationData([]);
+		if (!translations) return dispatch(setTranslationData([]));
 		const filledTranslations = [];
 		for (const [key, value] of Object.entries(translations)) {
 			const temp: { [key: string]: String } = {
@@ -37,8 +44,8 @@ function TranslationEditor() {
 			}
 			filledTranslations.push(temp);
 		}
-		setTranslationData(filledTranslations);
-	}, [translations]);
+		dispatch(setTranslationData(filledTranslations));
+	}, [dispatch, translations]);
 
 	useEffect(() => {
 		fillData();
@@ -57,8 +64,8 @@ function TranslationEditor() {
 			label: 'Add',
 			icon: 'pi pi-fw pi-plus',
 			command: () => {
-				setTranslationDialogType(TranslationDialogEnum.add);
-				setShowEditDialog(true);
+				dispatch(setTranslationDialogType(TranslationDialogEnum.add));
+				dispatch(setShowEditDialog(true));
 				// return viewProduct(selectedProduct)
 			},
 		},
@@ -66,8 +73,8 @@ function TranslationEditor() {
 			label: 'Edit',
 			icon: 'pi pi-fw pi-pencil',
 			command: () => {
-				setTranslationDialogType(TranslationDialogEnum.edit);
-				setShowEditDialog(true);
+				dispatch(setTranslationDialogType(TranslationDialogEnum.edit));
+				dispatch(setShowEditDialog(true));
 				// return viewProduct(selectedProduct)
 			},
 		},
@@ -102,43 +109,43 @@ function TranslationEditor() {
 	// const exportCSV = () => {
 	// 	translationTableRef.current.exportCSV();
 	// };
-	const hideEditDialog = () => {
-		setShowEditDialog(false);
-	};
+
 	const onTranslationUpdate = (translation: { [key: string]: String }) => {
 		const translations = cloneDeep(translationData);
 		if (translationDialogType === TranslationDialogEnum.add) {
 			translations.push(translation);
-			setUpdatedIds((prev) => [...prev, translation.id]);
+			// @ts-ignore
+			dispatch(setUpdatedIds((prev) => [...prev, translation.id]));
 		} else {
 			translations.forEach((item, index) => {
 				if (translation.id === item.id) {
 					translations[index] = translation;
 					if (!updatedIds.some((x) => x === translation.id)) {
-						setUpdatedIds((prev) => [...prev, translation.id]);
+						// @ts-ignore
+						dispatch(setUpdatedIds((prev: any[]) => [...prev, translation.id]));
 					}
 				}
 			});
 		}
-		setTranslationData(translations);
+		dispatch(setTranslationData(translations));
 	};
 
 	return (
 		<>
-			<ContextMenu model={menuModel} ref={cm} onHide={() => setSelectedTranslation({})} />
+			<ContextMenu model={menuModel} ref={cm} onHide={() => dispatch(setSelectedTranslation({}))} />
 			<DataTable
 				ref={translationTableRef}
 				style={{ width: '100%', height: '100%', overflow: 'scroll' }}
 				value={translationData}
 				selectionMode="single"
 				selection={selectedTranslation}
-				onContextMenuSelectionChange={(e) => setSelectedTranslation(e.value)}
+				onContextMenuSelectionChange={(e) => dispatch(setSelectedTranslation(e.value))}
 				onContextMenu={(e) => cm.current.show(e.originalEvent)}
 				onRowDoubleClick={(e) => {
-					setTranslationDialogType(TranslationDialogEnum.edit);
-					setShowEditDialog(true);
+					dispatch(setTranslationDialogType(TranslationDialogEnum.edit));
+					dispatch(setShowEditDialog(true));
 				}}
-				onSelectionChange={(e) => setSelectedTranslation(e.value)}
+				onSelectionChange={(e) => dispatch(setSelectedTranslation(e.value))}
 				className="mt-0"
 				resizableColumns
 				scrollable
@@ -153,7 +160,7 @@ function TranslationEditor() {
 			{showEditDialog && (
 				<TranslationDialog
 					displayDialog={showEditDialog}
-					setDisplayDialog={setShowEditDialog}
+					setDisplayDialog={dispatch(setShowEditDialog)}
 					translation={selectedTranslation}
 					type={translationDialogType}
 					update={onTranslationUpdate}

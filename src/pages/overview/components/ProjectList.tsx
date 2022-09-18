@@ -10,8 +10,8 @@ import {
 } from '../../../redux/slices/settingsSlice';
 import ProjectDialog from '../../../core/components/ProjectDialog';
 import ProjectDialogEnum from '../../../core/enums/ProjectDialogEnum';
-import fullPin from '../../../assets/icons/full-pin.svg';
-import emptyPin from '../../../assets/icons/empty-pin.svg';
+// import fullPin from '../../../assets/icons/full-pin.svg';
+// import emptyPin from '../../../assets/icons/empty-pin.svg';
 import pin from '../../../assets/icons/pin.png';
 import pinFilled from '../../../assets/icons/pin-filled.png';
 

@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import TranslationDialogEnum from '../../core/enums/TranslationDialogEnum';
 import { FileTreeInterface } from '../../core/interfaces/FileTreeInterface';
 import { Translation } from '../../core/interfaces/TranslationInterface';
 import { TreeNode } from '../../core/interfaces/TreeNodeInterface';
@@ -6,7 +7,12 @@ import { TreeNode } from '../../core/interfaces/TreeNodeInterface';
 const initialState: FileTreeInterface = {
 	tree: null,
 	translations: null,
+	translationData: [],
 	activeFile: null,
+	selectedTranslation: {},
+	updatedIds: [],
+	showEditDialog: false,
+	translationDialogType: TranslationDialogEnum.add,
 };
 
 const filesSlice = createSlice({
@@ -37,10 +43,34 @@ const filesSlice = createSlice({
 		setTranslations(state, action: PayloadAction<Translation>) {
 			state.translations = action.payload;
 		},
+		setTranslationData(state, action: PayloadAction<any[]>) {
+			state.translationData = action.payload;
+		},
+		setUpdatedIds(state, action: PayloadAction<any[]>) {
+			state.updatedIds = action.payload;
+		},
+		setSelectedTranslation(state, action: PayloadAction<{}>) {
+			state.selectedTranslation = action.payload;
+		},
+		setShowEditDialog(state, action: PayloadAction<boolean>) {
+			state.showEditDialog = action.payload;
+		},
+		setTranslationDialogType(state, action: PayloadAction<TranslationDialogEnum>) {
+			state.translationDialogType = action.payload;
+		},
 	},
 });
 
-export const { setFiles, setActiveFile, setIsExpandedOnDirectoryNode, setTranslations } =
-	filesSlice.actions;
+export const {
+	setFiles,
+	setActiveFile,
+	setIsExpandedOnDirectoryNode,
+	setTranslations,
+	setTranslationData,
+	setUpdatedIds,
+	setSelectedTranslation,
+	setShowEditDialog,
+	setTranslationDialogType,
+} = filesSlice.actions;
 
 export default filesSlice.reducer;
