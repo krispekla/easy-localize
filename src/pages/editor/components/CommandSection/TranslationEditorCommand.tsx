@@ -3,7 +3,7 @@ import {
 	setShowEditDialog,
 	setTranslationDialogType,
 	deleteTranslation,
-	exportCSV,
+	setExportCsvFlag,
 } from '../../../../redux/slices/filesSlice';
 import { isEmpty } from 'lodash';
 import TranslationDialogEnum from '../../../../core/enums/TranslationDialogEnum';
@@ -31,7 +31,7 @@ function TranslationEditorCommand() {
 		dispatch(deleteTranslation());
 	}
 	function onExportCSVHandler() {
-		dispatch(exportCSV());
+		dispatch(setExportCsvFlag(true));
 	}
 	return (
 		<div className="translation-editor-command  pl-3 pt-2">

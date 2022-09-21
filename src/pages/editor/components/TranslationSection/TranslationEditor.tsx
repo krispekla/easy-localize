@@ -16,9 +16,8 @@ import {
 	setShowEditDialog,
 	setTranslationDialogType,
 	deleteTranslation,
-	setTranslationTableRef,
+	setExportCsvFlag,
 } from '../../../../redux/slices/filesSlice';
-import ProjectDialog from '../../../../core/components/LanguageSettings';
 
 function TranslationEditor() {
 	const dispatch = useAppDispatch();
@@ -30,6 +29,7 @@ function TranslationEditor() {
 	const selectedTranslation = useAppSelector((state) => state.files.selectedTranslation);
 	const showEditDialog = useAppSelector((state) => state.files.showEditDialog);
 	const translationDialogType = useAppSelector((state) => state.files.translationDialogType);
+	const exportCsvFlag = useAppSelector((state) => state.files.exportCsv);
 
 	const fillData = useCallback(() => {
 		if (!translations) return dispatch(setTranslationData([]));
@@ -47,10 +47,11 @@ function TranslationEditor() {
 	}, [dispatch, translations]);
 
 	useEffect(() => {
-		// TODO Problem when closing ProjectDialog, cleanup ref
-		// is probably problem
-		dispatch(setTranslationTableRef(translationTableRef));
-	}, []);
+		if (exportCsvFlag) {
+			translationTableRef?.current.exportCSV();
+			dispatch(setExportCsvFlag(false));
+		}
+	}, [exportCsvFlag]);
 
 	useEffect(() => {
 		fillData();
@@ -100,9 +101,6 @@ function TranslationEditor() {
 			field={item.alpha2}
 			header={`${item.language} (${item.alpha2})`}></Column>
 	));
-	// const exportCSV = () => {
-	// 	translationTableRef.current.exportCSV();
-	// };
 
 	const onTranslationUpdate = (translation: { [key: string]: String }) => {
 		const translations = cloneDeep(translationData);

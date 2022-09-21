@@ -13,5 +13,5 @@ export type FileTreeInterface = {
 	selectedTranslation: {};
 	showEditDialog: boolean;
 	translationDialogType: TranslationDialogEnum;
-	translationTableRef: MutableRefObject<DataTable> | null;
+	exportCsv: boolean;
 };
