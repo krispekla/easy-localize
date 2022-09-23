@@ -4,11 +4,14 @@ function FileEditorCommand() {
 	return (
 		<div className="file-editor-command  pl-3 pt-2">
 			<h1 className="mb-3 text-gray-200">File editor command</h1>
+			<h1 className="mb-3 text-gray-200">
+				TODO Show dropdown with selected translation, highlight in file editor selected translation
+			</h1>
 			<div className="absolute bottom-15 right-5">
 				<button className="mt-1 mr-5 px-3 h-10 text-sm text-white bg-queenBlue hover:bg-queenBlueHover rounded-md shadow-md hover:shadow-lg uppercase">
 					Revert to Text
 				</button>
-				<button className="mt-1 px-3 h-10 text-sm text-white bg-queenBlue hover:bg-queenBlueHover rounded-md shadow-md hover:shadow-lg uppercase">
+				<button className="mt-1 mr-5 px-3 h-10 text-sm text-white bg-queenBlue hover:bg-queenBlueHover rounded-md shadow-md hover:shadow-lg uppercase">
 					Edit ID
 				</button>
 				<button className="mt-1 px-3 h-10 text-sm text-white bg-queenBlue hover:bg-queenBlueHover rounded-md shadow-md hover:shadow-lg uppercase">
