@@ -1,3 +1,4 @@
+/* eslint-disable no-loop-func */
 import React, { useEffect, useState } from 'react';
 import { useAppSelector } from '../../../../redux/hooks';
 import './FileEditor.scss';
@@ -7,6 +8,7 @@ function FileEditor() {
 	const activeFile = useAppSelector((state) => state.files.activeFile);
 	const [fileContent, setFileContent] = useState<string[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [lines, setLines] = useState<any[]>([]);
 
 	useEffect(() => {
 		window.electron.on('read-file-return', (event: any, file: string) => {
@@ -28,21 +30,99 @@ function FileEditor() {
 		let match;
 		let foundTranslations = [];
 		while ((match = vueI18nRegex.exec(file))) {
-			console.log('start index= ' + (vueI18nRegex.lastIndex - match[0].length));
-			console.log('end index= ' + (vueI18nRegex.lastIndex - 1));
 			foundTranslations.push({
 				value: match[0].substring(match[0].indexOf('"') + 1, match[0].lastIndexOf('"')),
 				start: vueI18nRegex.lastIndex - match[0].length,
 				end: vueI18nRegex.lastIndex - 1,
 			});
 		}
-		console.log(
-			'%c 🤝: processTranslationsInFile -> foundTranslations ',
-			'font-size:16px;background-color:#832c64;color:white;',
-			foundTranslations
-		);
+		let translationRanges = foundTranslations.map((x) => [x.start, x.end, x.value]);
 
-		setFileContent(file.split('\n'));
+		let text = '';
+		let translation = '';
+		let activeTranslation: object | null = null;
+		let row: any = [];
+		let temp: any = [];
+		file.split('').forEach((x, index) => {
+			for (let i = 0; i < translationRanges.length; i++) {
+				if (x === '\n') {
+					if (text) {
+						row.push({
+							type: 'text',
+							text,
+						});
+					}
+					if (translation) {
+						row.push({
+							type: 'translation',
+							translation,
+						});
+						translation = '';
+					}
+					activeTranslation = null;
+					temp.push(
+						<div className="flex flex-row whitespace-pre" key={x + index + i}>
+							{row.map((item: any) => {
+								if (item.type === 'text') {
+									return <div>{item.text}</div>;
+								} else {
+									return (
+										<div
+											className="bg-indigo-700 hover:bg-indigo-600 cursor-pointer"
+											onClick={(e) => onTranslationClick({ ...item.activeTranslation })}>
+											{item.translation}
+										</div>
+									);
+								}
+							})}
+						</div>
+					);
+					translation = '';
+					text = '';
+					row = [];
+					return;
+				} else if (index === translationRanges[i][0]) {
+					activeTranslation = translationRanges[i];
+					translation += x;
+					if (text) {
+						row.push({
+							type: 'text',
+							text,
+						});
+					}
+					return;
+				} else if (index === translationRanges[i][1]) {
+					translation += x;
+					row.push({
+						type: 'translation',
+						translation,
+						activeTranslation,
+					});
+					text = '';
+					translation = '';
+					return;
+				} else if (index > translationRanges[i][0] && index < translationRanges[i][1]) {
+					translation += x;
+					return;
+				} else if (translationRanges.length - 1 === i) {
+					if (!translation) {
+						text += x;
+					} else {
+						translation = '';
+					}
+					return;
+				}
+			}
+		});
+		setLines(temp);
+		// setFileContent(file.split('\n'));
+	}
+	function onTranslationClick(data: any) {
+		console.log(
+			'%c 🇦🇷: onTranslationClick -> data ',
+			'font-size:16px;background-color:#4fb4dd;color:white;',
+			data
+		);
 	}
 
 	function loadFileTree() {
@@ -57,23 +137,24 @@ function FileEditor() {
 		<section className="file__editor flex flex-col pl-3 pt-2">
 			<h2 className="mb-1 text-gray-200">Editor</h2>
 			<div className={` dark:text-white ${isLoading ? 'flex items-center' : ''}`}>
-				{fileContent.length > 0 &&
-					fileContent.map((line, index) => {
-						return (
-							<div className="file__line flex text-xs flex-row" key={line + index}>
-								<span className="text-gray-400 mr-3">{index + 1}</span>
-								{/* {line} */}
-								{line.split('').map((char, charIndex) => {
-									return (
-										<span className="char__element" key={char + index + charIndex}>
-											{char}
-										</span>
-									);
-								})}
-							</div>
-						);
-					})}
-
+				{
+					lines.length > 0 && lines.map((x) => x)
+					// fileContent.map((line, index) => {
+					// 	return (
+					// 		<div className="file__line flex text-xs flex-row" key={line + index}>
+					// 			<span className="text-gray-400 mr-3">{index + 1}</span>
+					// 			{/* {line} */}
+					// 			{line.split('').map((char, charIndex) => {
+					// 				return (
+					// 					<span className="char__element" key={char + index + charIndex}>
+					// 						{char}
+					// 					</span>
+					// 				);
+					// 			})}
+					// 		</div>
+					// 	);
+					// })}
+				}{' '}
 				{isLoading && (
 					<ProgressSpinner
 						className="justify-self-center align-center h-100"
