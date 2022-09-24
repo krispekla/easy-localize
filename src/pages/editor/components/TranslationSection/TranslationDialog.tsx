@@ -4,6 +4,10 @@ import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import TranslationDialogEnum from '../../../../core/enums/TranslationDialogEnum';
 import { useAppDispatch } from '../../../../redux/hooks';
 import { setShowEditDialog } from '../../../../redux/slices/filesSlice';
+import googleTranslateIcon from '../../../../assets/icons/google-translate-icon.svg';
+import { useEffect, useState } from 'react';
+import { useAppSelector } from '../../../../redux/hooks';
+
 export interface TranslationDialogInterface {
 	translation: {};
 	type: TranslationDialogEnum;
@@ -19,7 +23,7 @@ export type Translation = {
 
 const TranslationDialog = (props: TranslationDialogInterface) => {
 	const dispatch = useAppDispatch();
-
+	const [activeTranslation, setActiveTranslation] = useState('');
 	const setTranslationAsArrayAndCopy = (translation: any) => {
 		const proccessedTranslation = [];
 		for (const [key, value] of Object.entries(translation)) {
@@ -41,6 +45,21 @@ const TranslationDialog = (props: TranslationDialogInterface) => {
 			};
 		});
 	};
+	const defaultLanguage: string = useAppSelector(
+		(state) =>
+			state.settings.projects[state.settings.currentProject].defaultLanguage?.alpha2 || 'en'
+	);
+
+	useEffect(() => {
+		if (window.electron) {
+			window.electron.on('get-translation-return', (event: any, translation: any) => {
+				setValue(activeTranslation, translation);
+			});
+		}
+		return () => {
+			window.electron.removeAllListeners('get-translation-return');
+		};
+	}, [activeTranslation]);
 
 	let formDefaultValues: any =
 		props.type === TranslationDialogEnum.edit && props.translation
@@ -57,6 +76,8 @@ const TranslationDialog = (props: TranslationDialogInterface) => {
 		handleSubmit,
 		formState: { errors },
 		control,
+		setValue,
+		getValues,
 	} = useForm<any>({
 		defaultValues: { ...formDefaultValues },
 	});
@@ -75,6 +96,21 @@ const TranslationDialog = (props: TranslationDialogInterface) => {
 		resetState();
 		dispatch(setShowEditDialog(false));
 	};
+
+	async function onTranslateClickHandler(target: any, translationArrayId: string) {
+		const translations = getValues('translation');
+		const translation = translations.find(
+			(x: { name: string }) => x.name === defaultLanguage
+		).value;
+		setActiveTranslation(translationArrayId);
+		if (window.electron) {
+			window.electron.send('get-translation', {
+				text: translation,
+				source: defaultLanguage,
+				target: target,
+			});
+		}
+	}
 
 	const onConfirmDialog = (data: any) => {
 		if (props.type === TranslationDialogEnum.add) {
@@ -170,6 +206,12 @@ const TranslationDialog = (props: TranslationDialogInterface) => {
 												className={`mr-3 w-72 h-10 my-2 ${
 													fieldState.invalid && fieldState.isTouched && 'border-red-400'
 												}`}
+											/>
+											<img
+												className="h-5 my-auto cursor-pointer"
+												alt=""
+												src={googleTranslateIcon}
+												onClick={(e) => onTranslateClickHandler(item.name, field.name)}
 											/>
 										</>
 									)}
