@@ -1,5 +1,4 @@
 import { ipcMain } from '../main';
-// const { Translate } = require('@google-cloud/translate').v2;
 import { Translate } from '@google-cloud/translate/build/src/v2/index';
 async function getTranslationHandler(
 	event: Electron.IpcMainEvent,
