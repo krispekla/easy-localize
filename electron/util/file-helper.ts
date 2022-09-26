@@ -38,6 +38,8 @@ export function readDirectoryTree(path: string, ignoredDirectory: string[]): Tre
 
 	while (stack.length) {
 		const currentNode = stack.pop();
+		ignoredDirectory.push('node_modules');
+		ignoredDirectory.push('.git');
 		currentNode.isIgnored = ignoredDirectory.includes(currentNode.name);
 
 		if (currentNode && !currentNode.isIgnored) {
@@ -48,16 +50,36 @@ export function readDirectoryTree(path: string, ignoredDirectory: string[]): Tre
 			for (let child of children) {
 				const childPath = `${currentNode.path}/${child.name}`;
 				const childNode = new TreeNode(childPath, child.name, child.isDirectory());
-				currentNode.children.push(childNode);
 
 				if (fs.statSync(childNode.path).isDirectory()) {
 					stack.push(childNode);
+				} else {
+					const translationsInFile = readTranslationsInVueType(childPath);
+					if (translationsInFile) {
+						childNode.setTranslations(translationsInFile);
+					}
 				}
+				currentNode.children.push(childNode);
 			}
 			currentNode.sort();
 		}
 	}
 	return root;
+}
+
+export function readTranslationsInVueType(url: string): string[] {
+	const rawData = fs.readFileSync(url);
+	let loadedData = rawData.toString();
+	let vueI18nRegex = /\$t([^\)]+\))/g;
+	let match;
+	let foundTranslations = [];
+	while ((match = vueI18nRegex.exec(loadedData))) {
+		foundTranslations.push(
+			match[0].substring(match[0].indexOf('"') + 1, match[0].lastIndexOf('"'))
+		);
+	}
+
+	return foundTranslations;
 }
 
 export function readTranslations(url: string): Translation {
