@@ -9,7 +9,7 @@ import { Splitter, SplitterPanel } from 'primereact/splitter';
 import { Project } from '../../core/interfaces/ProjectInterface';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { TreeNode } from '../../core/interfaces/TreeNodeInterface';
-import { setFiles, setTranslations } from '../../redux/slices/filesSlice';
+import { setFiles, setFileTranslations, setTranslations } from '../../redux/slices/filesSlice';
 import FileEditorCommand from './components/CommandSection/FileEditorCommand';
 import { SelectButton } from 'primereact/selectbutton';
 import TranslationEditorCommand from './components/CommandSection/TranslationEditorCommand';
@@ -38,6 +38,7 @@ function Editor({ history }: any | HashRouterProps) {
 			window.electron.on('read-directory-tree-return', (event: any, fileTree: TreeNode) => {
 				fileTree.isExpanded = true;
 				dispatch(setFiles(fileTree));
+				dispatch(setFileTranslations(fileTree));
 			});
 
 			loadTranslationFiles();

@@ -1,4 +1,4 @@
-import { MouseEventHandler, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Settings } from '../../core/interfaces/SettingsInterface';
 import { useAppDispatch } from '../../redux/hooks';
 import { loadSettings } from '../../redux/slices/settingsSlice';
@@ -9,10 +9,6 @@ function Overview() {
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
-		window.electron.on('app-startup-return', (event: any, args: any[]) => {
-			console.log('%c 💴: PROJECTS', 'font-size:16px;background-color:#676d1f;color:white;', args);
-		});
-
 		if (window.electron) {
 			window.electron.on('settings-load-return', (event: any, args: Settings) => {
 				dispatch(loadSettings(args));
@@ -41,7 +37,8 @@ function Overview() {
 			</section>
 			<button
 				className="absolute top-2 right-3 px-4 py-2 dark:text-white bg-red-700 hover:bg-red-600 rounded-md shadow-md hover:shadow-lg"
-				onClick={quitApplication}>
+				onClick={quitApplication}
+			>
 				Quit
 			</button>
 		</main>

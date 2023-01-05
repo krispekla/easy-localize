@@ -1,18 +1,20 @@
 /* eslint-disable no-loop-func */
 import React, { useEffect, useState } from 'react';
-import { useAppSelector } from '../../../../redux/hooks';
+import { useAppSelector, useAppDispatch } from '../../../../redux/hooks';
 import './FileEditor.scss';
 import { ProgressSpinner } from 'primereact/progressspinner';
-
+import { setSelectedFileTranslation } from '../../../../redux/slices/filesSlice';
 function FileEditor() {
 	const activeFile = useAppSelector((state) => state.files.activeFile);
 	const [fileContent, setFileContent] = useState<string[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [lines, setLines] = useState<any[]>([]);
+	const selectedTranslation = useAppSelector((state) => state.files.selectedTranslation);
+	const dispatch = useAppDispatch();
+	const selectedTranslationInFile = useAppSelector((state) => state.files.selectedFileTranslation);
 
 	useEffect(() => {
 		window.electron.on('read-file-return', (event: any, file: string) => {
-			console.log('ASDF', file);
 			setIsLoading(false);
 			processTranslationsInFile(file);
 		});
@@ -68,7 +70,11 @@ function FileEditor() {
 								} else {
 									return (
 										<div
-											className="bg-indigo-700 hover:bg-indigo-600 cursor-pointer"
+											className={`cursor-pointer ${
+												item.activeTranslation[2] === selectedTranslation.id
+													? 'bg-yellow-400 hover:bg-yellow-300'
+													: 'bg-indigo-700 hover:bg-indigo-600'
+											}`}
 											onClick={(e) => onTranslationClick({ ...item.activeTranslation })}>
 											{item.translation}
 										</div>
@@ -115,14 +121,9 @@ function FileEditor() {
 			}
 		});
 		setLines(temp);
-		// setFileContent(file.split('\n'));
 	}
 	function onTranslationClick(data: any) {
-		console.log(
-			'%c 🇦🇷: onTranslationClick -> data ',
-			'font-size:16px;background-color:#4fb4dd;color:white;',
-			data
-		);
+		dispatch(setSelectedFileTranslation({ start: data[0], end: data[1], name: data[2] }));
 	}
 
 	function loadFileTree() {
@@ -137,24 +138,7 @@ function FileEditor() {
 		<section className="file__editor flex flex-col pl-3 pt-2">
 			<h2 className="mb-1 text-gray-200">Editor</h2>
 			<div className={` dark:text-white ${isLoading ? 'flex items-center' : ''}`}>
-				{
-					lines.length > 0 && lines.map((x) => x)
-					// fileContent.map((line, index) => {
-					// 	return (
-					// 		<div className="file__line flex text-xs flex-row" key={line + index}>
-					// 			<span className="text-gray-400 mr-3">{index + 1}</span>
-					// 			{/* {line} */}
-					// 			{line.split('').map((char, charIndex) => {
-					// 				return (
-					// 					<span className="char__element" key={char + index + charIndex}>
-					// 						{char}
-					// 					</span>
-					// 				);
-					// 			})}
-					// 		</div>
-					// 	);
-					// })}
-				}{' '}
+				{lines.length > 0 && lines.map((x) => x)}
 				{isLoading && (
 					<ProgressSpinner
 						className="justify-self-center align-center h-100"

@@ -3,7 +3,7 @@ import * as path from 'path';
 import { Settings } from '../types/interfaces/SettingsInterface';
 import TreeNode from '../types/interfaces/TreeNode';
 import { app } from '../main';
-import { flatten } from './utils';
+import { flatten, unflatten } from './utils';
 
 let APP_CONFIG_ROOT_PATH_CONFIG: string;
 
@@ -67,16 +67,18 @@ export function readDirectoryTree(path: string, ignoredDirectory: string[]): Tre
 	return root;
 }
 
-export function readTranslationsInVueType(url: string): string[] {
+export function readTranslationsInVueType(url: string): object[] {
 	const rawData = fs.readFileSync(url);
 	let loadedData = rawData.toString();
 	let vueI18nRegex = /\$t([^\)]+\))/g;
 	let match;
 	let foundTranslations = [];
 	while ((match = vueI18nRegex.exec(loadedData))) {
-		foundTranslations.push(
-			match[0].substring(match[0].indexOf('"') + 1, match[0].lastIndexOf('"'))
-		);
+		foundTranslations.push({
+			name: match[0].substring(match[0].indexOf('"') + 1, match[0].lastIndexOf('"')),
+			start: vueI18nRegex.lastIndex - match[0].length,
+			end: vueI18nRegex.lastIndex - 1,
+		});
 	}
 
 	return foundTranslations;
@@ -103,6 +105,27 @@ export function readTranslations(url: string): Translation {
 		}
 	}
 	return loadedTranslations;
+}
+
+export function writeTranslations(url: string, translations: Translation) {
+	let fileTranslations = {};
+	for (const [id, txs] of Object.entries(translations)) {
+		for (const [lang, translation] of Object.entries(txs)) {
+			// @ts-ignore
+			if (!fileTranslations[lang]) {
+				// @ts-ignore
+				fileTranslations[lang] = {};
+			} else {
+				// @ts-ignore
+				fileTranslations[lang][id] = translation;
+			}
+		}
+	}
+	for (const [langName, txs] of Object.entries(fileTranslations)) {
+		const unflattenTranslations = unflatten(txs);
+		const fileName = path.join(url, langName + '.json');
+		fs.writeFileSync(fileName, JSON.stringify(unflattenTranslations, null, 2));
+	}
 }
 
 export interface Translation {

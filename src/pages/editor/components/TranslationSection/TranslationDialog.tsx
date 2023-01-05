@@ -35,6 +35,7 @@ const TranslationDialog = (props: TranslationDialogInterface) => {
 		}
 		return proccessedTranslation;
 	};
+	const apiKey: string = useAppSelector((state) => state.settings.googleApiKey);
 
 	const setId = (translation: { [key: string]: String }) => translation.id;
 	const getLanguages = (translation: Array<{}>) => {
@@ -108,6 +109,7 @@ const TranslationDialog = (props: TranslationDialogInterface) => {
 				text: translation,
 				source: defaultLanguage,
 				target: target,
+				key: apiKey,
 			});
 		}
 	}

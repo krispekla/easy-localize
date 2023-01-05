@@ -7,14 +7,45 @@ import { TreeNode } from '../../core/interfaces/TreeNodeInterface';
 
 const initialState: FileTreeInterface = {
 	tree: null,
+	fileTranslations: [],
 	translations: null,
 	translationData: [],
 	activeFile: null,
 	selectedTranslation: {},
+	selectedFileTranslation: {},
 	updatedIds: [],
 	showEditDialog: false,
 	translationDialogType: TranslationDialogEnum.add,
 	exportCsv: false,
+};
+
+function readAllTranslationsFromTree(node: TreeNode, acumulator: {}): any {
+	if (node.children.length > 0) {
+		for (let i = 0; i < node.children.length; i++) {
+			readAllTranslationsFromTree(node.children[i], acumulator);
+		}
+	} else {
+		if (node.translations) {
+			for (let i = 0; i < node.translations.length; i++) {
+				const tx = node.translations[i] as unknown as Translation;
+				const id = tx.name;
+				if (acumulator.hasOwnProperty(id as unknown as PropertyKey)) {
+					// @ts-ignore
+					acumulator[id].push({ fileName: node.name, start: tx.start, end: tx.end });
+				} else {
+					// @ts-ignore
+					acumulator[id] = [{ fileName: node.name, start: tx.start, end: tx.end }];
+				}
+			}
+		}
+		return acumulator;
+	}
+}
+
+const electronSaveTranslations = (url: string, txs: Translation) => {
+	if (window?.electron?.send) {
+		window.electron.send('write-translation-files', { url, translations: txs });
+	}
 };
 
 const filesSlice = createSlice({
@@ -23,6 +54,11 @@ const filesSlice = createSlice({
 	reducers: {
 		setFiles(state, action: PayloadAction<TreeNode>) {
 			state.tree = action.payload;
+		},
+		setFileTranslations(state, action: PayloadAction<TreeNode>) {
+			let translations: {} = {};
+			readAllTranslationsFromTree(action.payload, translations);
+			state.fileTranslations = translations;
 		},
 		setActiveFile(state, action: PayloadAction<TreeNode>) {
 			state.activeFile = action.payload;
@@ -54,11 +90,49 @@ const filesSlice = createSlice({
 		setSelectedTranslation(state, action: PayloadAction<{}>) {
 			state.selectedTranslation = action.payload;
 		},
+		setSelectedFileTranslation(state, action: PayloadAction<{}>) {
+			state.selectedFileTranslation = action.payload;
+		},
 		setShowEditDialog(state, action: PayloadAction<boolean>) {
 			state.showEditDialog = action.payload;
 		},
 		setTranslationDialogType(state, action: PayloadAction<TranslationDialogEnum>) {
 			state.translationDialogType = action.payload;
+		},
+		saveTranslations(state, action: PayloadAction<string>) {
+			const translations = {};
+			for (let i = 0; i < state.translationData.length; i++) {
+				const tx = state.translationData[i] as Translation;
+				let temp = {};
+				let id = '';
+				for (const [key, value] of Object.entries(tx)) {
+					if (key === 'id') {
+						id = value as unknown as string;
+					} else {
+						// @ts-ignore
+						temp[key] = value;
+					}
+				}
+				// @ts-ignore
+				translations[id] = temp;
+			}
+			state.translations = translations;
+			electronSaveTranslations(action.payload, translations);
+		},
+		resetTranslationData(state) {
+			const filledTranslations = [];
+			// @ts-ignore
+			for (const [key, value] of Object.entries(state.translations)) {
+				const temp: { [key: string]: String } = {
+					id: key,
+				};
+				for (const [lng, translation] of Object.entries(value)) {
+					// @ts-ignore
+					temp[lng] = translation;
+				}
+				filledTranslations.push(temp);
+			}
+			state.translationData = filledTranslations;
 		},
 		deleteTranslation(state) {
 			if (isEmpty(state.selectedTranslation)) return;
@@ -77,16 +151,20 @@ const filesSlice = createSlice({
 
 export const {
 	setFiles,
+	setFileTranslations,
 	setActiveFile,
 	setIsExpandedOnDirectoryNode,
 	setTranslations,
 	setTranslationData,
 	setUpdatedIds,
 	setSelectedTranslation,
+	setSelectedFileTranslation,
 	setShowEditDialog,
 	setTranslationDialogType,
 	deleteTranslation,
 	setExportCsvFlag,
+	saveTranslations,
+	resetTranslationData,
 } = filesSlice.actions;
 
 export default filesSlice.reducer;

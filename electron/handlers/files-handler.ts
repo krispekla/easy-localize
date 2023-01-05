@@ -1,5 +1,10 @@
 import { Translation } from './../util/file-helper';
-import { readFileContent, readDirectoryTree, readTranslations } from '../util/file-helper';
+import {
+	readFileContent,
+	readDirectoryTree,
+	readTranslations,
+	writeTranslations,
+} from '../util/file-helper';
 import { ipcMain } from '../main';
 import TreeNode from '../types/interfaces/TreeNode';
 
@@ -24,6 +29,13 @@ function readTranslationsHandler(
 	event.sender.send('read-translation-files-return', translations);
 }
 
+function writeTranslationsHandler(
+	event: Electron.IpcMainEvent,
+	{ url, translations }: { url: string; translations: Translation }
+) {
+	writeTranslations(url, translations);
+}
+
 export const readDirectoryTreeListener = ipcMain.on(
 	'read-directory-tree',
 	readDirectoryTreeHandler
@@ -32,4 +44,8 @@ export const readFileContentListener = ipcMain.on('read-file', readFileHandler);
 export const readTranslationsListener = ipcMain.on(
 	'read-translation-files',
 	readTranslationsHandler
+);
+export const writeTranslationsListener = ipcMain.on(
+	'write-translation-files',
+	writeTranslationsHandler
 );

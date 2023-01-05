@@ -10,6 +10,7 @@ import { setActiveFile, setIsExpandedOnDirectoryNode } from '../../../../redux/s
 function FileTree() {
 	const fileTree = useAppSelector((state) => state.files.tree);
 	const activeFile = useAppSelector((state) => state.files.activeFile);
+	const selectedTranslation = useAppSelector((state) => state.files.selectedTranslation);
 	const dispatch = useAppDispatch();
 
 	function onFileItemClick(node: TreeNode) {
@@ -40,6 +41,12 @@ function FileTree() {
 					<span className={`ml-3 ${node.name === activeFile?.name && 'text-yellow-300'}`}>
 						{node.name}
 					</span>
+					{/* @ts-ignore */}
+					{node.translations.some((x) => x.name === selectedTranslation.id) ? (
+						<i className="pi pi-circle-fill ml-auto mr-4"></i>
+					) : (
+						''
+					)}
 				</div>
 				<div className="ml-3">
 					{hasChildren && node.children.map((x) => <FileRenderer key={x.name} {...x} />)}

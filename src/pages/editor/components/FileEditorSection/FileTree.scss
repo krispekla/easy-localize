@@ -17,4 +17,8 @@
 	&::-webkit-scrollbar-thumb {
 		background: rgba(54, 48, 48, 0.637);
 	}
+	.pi-circle-fill:before {
+   		color: #30f9ff;
+		font-size: 11px;
+	}
 }

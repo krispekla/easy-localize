@@ -4,14 +4,22 @@ import {
 	setTranslationDialogType,
 	deleteTranslation,
 	setExportCsvFlag,
+	saveTranslations,
+	resetTranslationData,
 } from '../../../../redux/slices/filesSlice';
 import { isEmpty } from 'lodash';
 import TranslationDialogEnum from '../../../../core/enums/TranslationDialogEnum';
+import { Toast } from 'primereact/toast';
+import { MutableRefObject, useRef } from 'react';
 
 function TranslationEditorCommand() {
+	const toast = useRef() as MutableRefObject<Toast>;
 	const dispatch = useAppDispatch();
 	const selectedTranslation = useAppSelector((state) => state.files.selectedTranslation);
-
+	const translationFolder: string =
+		useAppSelector(
+			(state) => state.settings.projects[state.settings.currentProject].translationFolder
+		) || '';
 	function onEditHandler() {
 		if (isEmpty(selectedTranslation)) {
 			return;
@@ -33,6 +41,16 @@ function TranslationEditorCommand() {
 	function onExportCSVHandler() {
 		dispatch(setExportCsvFlag(true));
 	}
+	function saveHandler() {
+		dispatch(saveTranslations(translationFolder));
+		toast.current.show({
+			severity: 'success',
+			summary: 'Success',
+			detail: 'Translations has been successfully written',
+			life: 30000,
+		});
+	}
+
 	return (
 		<div className="translation-editor-command  pl-3 pt-2">
 			<h1 className="mb-3 text-gray-200">Commands</h1>
@@ -73,13 +91,18 @@ function TranslationEditorCommand() {
 				</button>
 			</div>
 			<div className="absolute bottom-5 right-5">
-				<button className="mt-1 mr-5 px-3 h-10 text-sm text-white bg-queenBlue hover:bg-queenBlueHover rounded-md shadow-md hover:shadow-lg uppercase">
+				<button
+					className="mt-1 mr-5 px-3 h-10 text-sm text-white bg-queenBlue hover:bg-queenBlueHover rounded-md shadow-md hover:shadow-lg uppercase"
+					onClick={(e) => dispatch(resetTranslationData())}>
 					Reset changes
 				</button>
-				<button className="mt-1 px-3 h-10 text-sm text-white bg-queenBlue hover:bg-queenBlueHover rounded-md shadow-md hover:shadow-lg uppercase">
+				<button
+					className="mt-1 px-3 h-10 text-sm text-white bg-queenBlue hover:bg-queenBlueHover rounded-md shadow-md hover:shadow-lg uppercase"
+					onClick={(e) => saveHandler()}>
 					Save changes
 				</button>
 			</div>
+			<Toast ref={toast} />
 		</div>
 	);
 }

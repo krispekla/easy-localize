@@ -4,7 +4,7 @@ export default class TreeNode {
 	children: Array<TreeNode>;
 	isDirectory: boolean;
 	isIgnored: boolean;
-	translations: Array<string>;
+	translations: Array<object>;
 
 	constructor(path: string, name: string, isDirectory: boolean = false, isIgnored = false) {
 		this.name = name;
@@ -26,7 +26,7 @@ export default class TreeNode {
 		);
 	}
 
-	setTranslations(translations: string[]) {
+	setTranslations(translations: object[]) {
 		this.translations = translations;
 	}
 }

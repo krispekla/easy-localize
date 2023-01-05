@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import ProjectDialog from '../../../core/components/ProjectDialog';
+import TranslationConfigurationDialog from '../../../core/components/TranslationConfigurationDialog';
 import ProjectDialogEnum from '../../../core/enums/ProjectDialogEnum';
 import { Project } from '../../../core/interfaces/ProjectInterface';
 import { useAppSelector } from '../../../redux/hooks';
 
 function ProjectInfo() {
 	const [projectConfigurationDialog, setProjectConfigurationDialog] = useState(false);
+	const [translationConfigurationDialog, setTranslationConfigurationDialog] = useState(false);
 	const currentProject: Project = useAppSelector(
 		(state) => state.settings.projects[state.settings.currentProject]
 	);
@@ -34,7 +36,8 @@ function ProjectInfo() {
 				Project configuration
 			</button>
 			<button
-				className="ml-5 mt-1 px-3 h-10 text-sm text-white bg-queenBlue hover:bg-queenBlueHover rounded-md shadow-md hover:shadow-lg uppercase">
+				className="ml-5 mt-1 px-3 h-10 text-sm text-white bg-queenBlue hover:bg-queenBlueHover rounded-md shadow-md hover:shadow-lg uppercase"
+				onClick={(e) => setTranslationConfigurationDialog(true)}>
 				Translation configuration
 			</button>
 			<ProjectDialog
@@ -44,6 +47,10 @@ function ProjectInfo() {
 				displayDialog={projectConfigurationDialog}
 				setDisplayDialog={setProjectConfigurationDialog}
 				clearDefault={null}
+			/>
+			<TranslationConfigurationDialog
+				displayDialog={translationConfigurationDialog}
+				setDisplayDialog={setTranslationConfigurationDialog}
 			/>
 		</section>
 	);

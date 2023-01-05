@@ -2,10 +2,9 @@ import { ipcMain } from '../main';
 import { Translate } from '@google-cloud/translate/build/src/v2/index';
 async function getTranslationHandler(
 	event: Electron.IpcMainEvent,
-	{ text, source, target }: { text: string; source: string; target: string }
+	{ text, source, target, key }: { text: string; source: string; target: string; key: string }
 ) {
-	const projectId = 'easy-locale';
-	const translate = new Translate({ projectId });
+	const translate = new Translate({ key });
 	const options = {
 		from: source,
 		to: target,

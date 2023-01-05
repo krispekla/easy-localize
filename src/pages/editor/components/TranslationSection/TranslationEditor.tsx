@@ -107,15 +107,15 @@ function TranslationEditor() {
 		if (translationDialogType === TranslationDialogEnum.add) {
 			translations.push(translation);
 			// @ts-ignore
-			dispatch(setUpdatedIds((prev) => [...prev, translation.id]));
+			// dispatch(setUpdatedIds((prev) => [...prev, translation.id]));
 		} else {
 			translations.forEach((item, index) => {
 				if (translation.id === item.id) {
 					translations[index] = translation;
-					if (!updatedIds.some((x) => x === translation.id)) {
-						// @ts-ignore
-						dispatch(setUpdatedIds((prev: any[]) => [...prev, translation.id]));
-					}
+					// if (!updatedIds.some((x) => x === translation.id)) {
+					// 	// @ts-ignore
+					// 	dispatch(setUpdatedIds((prev: any[]) => [...prev, translation.id]));
+					// }
 				}
 			});
 		}
