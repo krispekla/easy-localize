@@ -2,6 +2,21 @@ import React, { useEffect, useState } from 'react';
 import AppBar from './AppBar';
 
 function App() {
+  useEffect(() => {
+    if (window.electron) {
+      window.electron.on('settings-load-return', (event: any, args: any) => {
+        console.log(args, 'KRIS');
+        // dispatch(loadSettings(args));
+      });
+
+      window.electron.send('settings-load');
+    }
+    return () => {
+      window.electron.removeAllListeners('app-startup-return');
+      window.electron.removeAllListeners('settings-load-return');
+    };
+  }, []);
+
   console.log(window.ipcRenderer);
 
   const [isOpen, setOpen] = useState(false);

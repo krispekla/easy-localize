@@ -2,14 +2,18 @@
 import { join } from 'path';
 
 // Packages
-import { BrowserWindow, app, ipcMain, IpcMainEvent } from 'electron';
+import { BrowserWindow, app, ipcMain, IpcMainEvent, IpcMain } from 'electron';
 import isDev from 'electron-is-dev';
 
 // Config
 import windowConfig from './config/window';
 
+// Listeners
+import { registerListeners } from './handlers/index';
+
 let window: BrowserWindow;
 
+export default app;
 function createWindow() {
   // Create the browser window.
   window = new BrowserWindow({
@@ -17,7 +21,7 @@ function createWindow() {
     // width,
     // height,
     // //  change to false to use AppBar
-    frame: false,
+    // frame: false,
     // show: true,
     // resizable: true,
     // fullscreenable: true,
@@ -27,7 +31,7 @@ function createWindow() {
   });
 
   const port = process.env.PORT || 3000;
-  const url = isDev ? `http://localhost:${port}` : join(__dirname, '../src/out/index.html');
+  const url = isDev ? `http://localhost:${port}#/overview` : join(__dirname, '../src/out/index.html');
 
   // and load the index.html of the app.
   if (isDev) {
@@ -38,20 +42,20 @@ function createWindow() {
   // Open the DevTools.
   // window.webContents.openDevTools();
 
-  // For AppBar
-  ipcMain.on('minimize', () => {
-    // eslint-disable-next-line no-unused-expressions
-    window.isMinimized() ? window.restore() : window.minimize();
-    // or alternatively: win.isVisible() ? win.hide() : win.show()
-  });
-  ipcMain.on('maximize', () => {
-    // eslint-disable-next-line no-unused-expressions
-    window.isMaximized() ? window.restore() : window.maximize();
-  });
+  // // For AppBar
+  // ipcMain.on('minimize', () => {
+  //   // eslint-disable-next-line no-unused-expressions
+  //   window.isMinimized() ? window.restore() : window.minimize();
+  //   // or alternatively: win.isVisible() ? win.hide() : win.show()
+  // });
+  // ipcMain.on('maximize', () => {
+  //   // eslint-disable-next-line no-unused-expressions
+  //   window.isMaximized() ? window.restore() : window.maximize();
+  // });
 
-  ipcMain.on('close', () => {
-    window.close();
-  });
+  // ipcMain.on('close', () => {
+  //   window.close();
+  // });
 }
 
 // This method will be called when Electron has finished
@@ -90,6 +94,7 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+registerListeners(ipcMain as IpcMain);
 
 // listen the channel `message` and resend the received message to the renderer process
 ipcMain.on('message', (event: IpcMainEvent, message: any) => {

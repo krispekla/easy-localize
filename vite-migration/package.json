@@ -1,5 +1,5 @@
 {
-  "name": "vite-reactts-electron-starter",
+  "name": "easy-localize",
   "version": "0.5.0",
   "license": "MIT",
   "main": "main/index.js",
@@ -16,7 +16,7 @@
   "repository": {
     "url": "https://github.com/lTimeless/vite-reactts-electron-starter"
   },
-  "productName": "vite-reactts-electron-starter",
+  "productName": "easy-localize",
   "scripts": {
     "dev": "concurrently \"yarn dev:vite\" \" yarn dev:electron\"",
     "dev:vite": "vite",
@@ -32,6 +32,7 @@
     "lint:fix": "eslint . --ext js,jsx,ts,tsx --fix"
   },
   "dependencies": {
+    "@google-cloud/translate": "^7.0.3",
     "@vitejs/plugin-react": "^1.2.0",
     "electron-is-dev": "^2.0.0",
     "react": "^17.0.2",
