@@ -1,6 +1,6 @@
 export enum ProjectDialogEnum {
-    add,
-    edit,
+  add,
+  edit
 }
 
-export default ProjectDialogEnum
+export default ProjectDialogEnum;

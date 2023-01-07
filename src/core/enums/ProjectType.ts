@@ -1,8 +1,8 @@
 export enum ProjectType {
-    Angular,
-    Vue,
-    React,
-    custom
+  Angular,
+  Vue,
+  React,
+  custom
 }
 
-export default ProjectType
+export default ProjectType;

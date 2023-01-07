@@ -6,43 +6,43 @@ import ProjectList from './components/ProjectList';
 import './Overview.scss';
 
 function Overview() {
-	const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
-	useEffect(() => {
-		if (window.electron) {
-			window.electron.on('settings-load-return', (event: any, args: Settings) => {
-				dispatch(loadSettings(args));
-			});
+  useEffect(() => {
+    if (window.electron) {
+      window.electron.on('settings-load-return', (event: any, args: Settings) => {
+        dispatch(loadSettings(args));
+      });
 
-			window.electron.send('settings-load');
-		}
+      window.electron.send('settings-load');
+    }
 
-		return () => {
-			window.electron.removeAllListeners('app-startup-return');
-			window.electron.removeAllListeners('settings-load-return');
-		};
-	}, [dispatch]);
+    return () => {
+      window.electron.removeAllListeners('app-startup-return');
+      window.electron.removeAllListeners('settings-load-return');
+    };
+  }, [dispatch]);
 
-	function quitApplication() {
-		window.close();
-	}
+  function quitApplication() {
+    window.close();
+  }
 
-	return (
-		<main className="overview bg-gradient-to-r from-sanJuan to-eastBay dark">
-			<div className="flex row"></div>
-			<h1 className="pt-3 dark:text-white text-center text-xl uppercase">Easy localise</h1>
-			<section className="container mx-auto mt-5">
-				<h2 className="dark:text-white text-lg mb-3">Projects</h2>
-				<ProjectList />
-			</section>
-			<button
-				className="absolute top-2 right-3 px-4 py-2 dark:text-white bg-red-700 hover:bg-red-600 rounded-md shadow-md hover:shadow-lg"
-				onClick={quitApplication}
-			>
-				Quit
-			</button>
-		</main>
-	);
+  return (
+    <main className="overview bg-gradient-to-r from-sanJuan to-eastBay dark">
+      <div className="flex row"></div>
+      <h1 className="pt-3 dark:text-white text-center text-xl uppercase">Easy localise</h1>
+      <section className="container mx-auto mt-5">
+        <h2 className="dark:text-white text-lg mb-3">Projects</h2>
+        <ProjectList />
+      </section>
+      <button
+        className="absolute top-2 right-3 px-4 py-2 dark:text-white bg-red-700 hover:bg-red-600 rounded-md shadow-md hover:shadow-lg"
+        onClick={quitApplication}
+      >
+        Quit
+      </button>
+    </main>
+  );
 }
 
 export default Overview;

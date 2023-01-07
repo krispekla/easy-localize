@@ -1,6 +1,6 @@
 export enum TranslationDialogEnum {
-	add,
-	edit,
+  add,
+  edit
 }
 
 export default TranslationDialogEnum;

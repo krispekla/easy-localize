@@ -1,7 +1,7 @@
 export type Translation = {
-	[name: string]: Object;
+  [name: string]: Object;
 };
 
 type Object = {
-	[key: string]: String;
+  [key: string]: String;
 };

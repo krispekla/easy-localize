@@ -1,7 +1,7 @@
 import { Project } from './ProjectInterface';
 
 export type Settings = {
-	projects: Project[];
-	currentProject: number;
-	googleApiKey: string;
+  projects: Project[];
+  currentProject: number;
+  googleApiKey: string;
 };

@@ -1,5 +1,5 @@
-import { TreeNode } from "./TreeNodeInterface";
+import { TreeNode } from './TreeNodeInterface';
 
 export type ActiveFile = {
-    currentFile: TreeNode
-}
+  currentFile: TreeNode;
+};
