@@ -4,6 +4,7 @@ import { useAppSelector, useAppDispatch } from '../../../../redux/hooks';
 import './FileEditor.scss';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { setSelectedFileTranslation } from '../../../../redux/slices/filesSlice';
+
 function FileEditor() {
   const activeFile = useAppSelector((state) => state.files.activeFile);
   const [fileContent, setFileContent] = useState<string[]>([]);
@@ -28,9 +29,9 @@ function FileEditor() {
   }, [activeFile]);
 
   function processTranslationsInFile(file: string) {
-    let vueI18nRegex = /\$t([^\)]+\))/g;
+    const vueI18nRegex = /\$t([^\)]+\))/g;
     let match;
-    let foundTranslations = [];
+    const foundTranslations = [];
     while ((match = vueI18nRegex.exec(file))) {
       foundTranslations.push({
         value: match[0].substring(match[0].indexOf('"') + 1, match[0].lastIndexOf('"')),
@@ -38,13 +39,13 @@ function FileEditor() {
         end: vueI18nRegex.lastIndex - 1
       });
     }
-    let translationRanges = foundTranslations.map((x) => [x.start, x.end, x.value]);
+    const translationRanges = foundTranslations.map((x) => [x.start, x.end, x.value]);
 
     let text = '';
     let translation = '';
     let activeTranslation: object | null = null;
     let row: any = [];
-    let temp: any = [];
+    const temp: any = [];
     file.split('').forEach((x, index) => {
       for (let i = 0; i < translationRanges.length; i++) {
         if (x === '\n') {
@@ -67,20 +68,19 @@ function FileEditor() {
               {row.map((item: any) => {
                 if (item.type === 'text') {
                   return <div>{item.text}</div>;
-                } else {
-                  return (
-                    <div
-                      className={`cursor-pointer ${
-                        item.activeTranslation[2] === selectedTranslation.id
-                          ? 'bg-yellow-400 hover:bg-yellow-300'
-                          : 'bg-indigo-700 hover:bg-indigo-600'
-                      }`}
-                      onClick={(e) => onTranslationClick({ ...item.activeTranslation })}
-                    >
-                      {item.translation}
-                    </div>
-                  );
                 }
+                return (
+                  <div
+                    className={`cursor-pointer ${
+                      item.activeTranslation[2] === selectedTranslation.id
+                        ? 'bg-yellow-400 hover:bg-yellow-300'
+                        : 'bg-indigo-700 hover:bg-indigo-600'
+                    }`}
+                    onClick={(e) => onTranslationClick({ ...item.activeTranslation })}
+                  >
+                    {item.translation}
+                  </div>
+                );
               })}
             </div>
           );
@@ -88,7 +88,8 @@ function FileEditor() {
           text = '';
           row = [];
           return;
-        } else if (index === translationRanges[i][0]) {
+        }
+        if (index === translationRanges[i][0]) {
           activeTranslation = translationRanges[i];
           translation += x;
           if (text) {
@@ -98,7 +99,8 @@ function FileEditor() {
             });
           }
           return;
-        } else if (index === translationRanges[i][1]) {
+        }
+        if (index === translationRanges[i][1]) {
           translation += x;
           row.push({
             type: 'translation',
@@ -108,10 +110,12 @@ function FileEditor() {
           text = '';
           translation = '';
           return;
-        } else if (index > translationRanges[i][0] && index < translationRanges[i][1]) {
+        }
+        if (index > translationRanges[i][0] && index < translationRanges[i][1]) {
           translation += x;
           return;
-        } else if (translationRanges.length - 1 === i) {
+        }
+        if (translationRanges.length - 1 === i) {
           if (!translation) {
             text += x;
           } else {

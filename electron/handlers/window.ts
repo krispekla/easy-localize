@@ -1,8 +1,11 @@
 import { BrowserWindow, screen } from 'electron';
 import windowConfig from '../config/window';
 
-function setWindow({ sender }: Electron.IpcMainEvent, config: { window: string; projectId: number }) {
-  let browserWindow = BrowserWindow.fromWebContents(sender) as BrowserWindow;
+function setWindow(
+  { sender }: Electron.IpcMainEvent,
+  config: { window: string; projectId: number }
+) {
+  const browserWindow = BrowserWindow.fromWebContents(sender) as BrowserWindow;
   const { width, height, maxWidth, maxHeight, minWidth, minHeight, animation, title, maximum } =
     windowConfig[config.window];
 
@@ -11,10 +14,11 @@ function setWindow({ sender }: Electron.IpcMainEvent, config: { window: string; 
 
   if (maximum) {
     const winBounds = browserWindow.getBounds();
-    const { width: machineScreenWidth, height: machineScreenHeight } = screen.getDisplayNearestPoint({
-      x: winBounds.x,
-      y: winBounds.y
-    }).workAreaSize;
+    const { width: machineScreenWidth, height: machineScreenHeight } =
+      screen.getDisplayNearestPoint({
+        x: winBounds.x,
+        y: winBounds.y
+      }).workAreaSize;
     browserWindow.setMaximumSize(machineScreenWidth, machineScreenHeight);
     browserWindow.setSize(machineScreenWidth, machineScreenHeight);
   } else {

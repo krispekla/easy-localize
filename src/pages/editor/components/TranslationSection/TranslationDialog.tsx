@@ -1,12 +1,11 @@
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
+import { useEffect, useState } from 'react';
 import TranslationDialogEnum from '../../../../core/enums/TranslationDialogEnum';
-import { useAppDispatch } from '../../../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { setShowEditDialog } from '../../../../redux/slices/filesSlice';
 import googleTranslateIcon from '../../../../assets/icons/google-translate-icon.svg';
-import { useEffect, useState } from 'react';
-import { useAppSelector } from '../../../../redux/hooks';
 
 export interface TranslationDialogInterface {
   translation: {};
@@ -21,7 +20,7 @@ export type Translation = {
   translation: object;
 };
 
-const TranslationDialog = (props: TranslationDialogInterface) => {
+function TranslationDialog(props: TranslationDialogInterface) {
   const dispatch = useAppDispatch();
   const [activeTranslation, setActiveTranslation] = useState('');
   const setTranslationAsArrayAndCopy = (translation: any) => {
@@ -30,14 +29,14 @@ const TranslationDialog = (props: TranslationDialogInterface) => {
       if (key === 'id') continue;
       proccessedTranslation.push({
         name: key,
-        value: value
+        value
       });
     }
     return proccessedTranslation;
   };
   const apiKey: string = useAppSelector((state) => state.settings.googleApiKey);
 
-  const setId = (translation: { [key: string]: String }) => translation.id;
+  const setId = (translation: { [key: string]: string }) => translation.id;
   const getLanguages = (translation: Array<{}>) => {
     return translation.map((x: any) => {
       return {
@@ -62,7 +61,7 @@ const TranslationDialog = (props: TranslationDialogInterface) => {
     };
   }, [activeTranslation]);
 
-  let formDefaultValues: any =
+  const formDefaultValues: any =
     props.type === TranslationDialogEnum.edit && props.translation
       ? {
           id: setId(props.translation),
@@ -108,7 +107,7 @@ const TranslationDialog = (props: TranslationDialogInterface) => {
       window.electron.send('get-translation', {
         text: translation,
         source: defaultLanguage,
-        target: target,
+        target,
         key: apiKey
       });
     }
@@ -120,7 +119,7 @@ const TranslationDialog = (props: TranslationDialogInterface) => {
     } else if (props.type === TranslationDialogEnum.edit) {
       //    Izvrsi proslijedeni callback u parentu
     }
-    const prepareTranslationForUpdate: { [key: string]: String } = {
+    const prepareTranslationForUpdate: { [key: string]: string } = {
       id: data.id
     };
     for (const item of Object.values(data.translation)) {
@@ -160,75 +159,73 @@ const TranslationDialog = (props: TranslationDialogInterface) => {
     );
   };
   return (
-    <>
-      <Dialog
-        visible={props.displayDialog}
-        header={`${props.type === TranslationDialogEnum.add ? 'Add new' : 'Update'} translation`}
-        draggable={false}
-        footer={renderDialogAddNewFooter()}
-        onHide={() => onHideDialog()}
-      >
-        <div className="flex flex-col">
-          <div className="flex flex-row items-center">
-            <label htmlFor="projectName" className="mr-3">
-              ID:
-            </label>
-            <Controller
-              name="id"
-              control={control}
-              rules={{ required: 'Id is required' }}
-              render={({ field, fieldState }) => (
-                <InputText
-                  id={field.name}
-                  {...field}
-                  autoFocus
-                  value={field.value}
-                  className={`mr-3 w-72 h-10 my-2 ${
-                    fieldState.invalid && fieldState.isTouched && 'border-red-400'
-                  }`}
-                />
-              )}
-            />
-          </div>
-          {errors['id'] && <small className="p-error ml-8">{errors['id'].message}</small>}
+    <Dialog
+      visible={props.displayDialog}
+      header={`${props.type === TranslationDialogEnum.add ? 'Add new' : 'Update'} translation`}
+      draggable={false}
+      footer={renderDialogAddNewFooter()}
+      onHide={() => onHideDialog()}
+    >
+      <div className="flex flex-col">
+        <div className="flex flex-row items-center">
+          <label htmlFor="projectName" className="mr-3">
+            ID:
+          </label>
+          <Controller
+            name="id"
+            control={control}
+            rules={{ required: 'Id is required' }}
+            render={({ field, fieldState }) => (
+              <InputText
+                id={field.name}
+                {...field}
+                autoFocus
+                value={field.value}
+                className={`mr-3 w-72 h-10 my-2 ${
+                  fieldState.invalid && fieldState.isTouched && 'border-red-400'
+                }`}
+              />
+            )}
+          />
         </div>
-        {fields.map((item: any, index) => {
-          return (
-            <div className="flex flex-col" key={item.id}>
-              <div className="flex flex-row items-center">
-                <Controller
-                  name={`translation.${index}.value`}
-                  control={control}
-                  render={({ field, fieldState }) => (
-                    <>
-                      <label htmlFor="projectName" className="mr-3">
-                        {item.name.toUpperCase()}:
-                      </label>
-                      <InputText
-                        id={field.name}
-                        {...field}
-                        autoFocus
-                        value={field.value}
-                        className={`mr-3 w-72 h-10 my-2 ${
-                          fieldState.invalid && fieldState.isTouched && 'border-red-400'
-                        }`}
-                      />
-                      <img
-                        className="h-5 my-auto cursor-pointer"
-                        alt=""
-                        src={googleTranslateIcon}
-                        onClick={(e) => onTranslateClickHandler(item.name, field.name)}
-                      />
-                    </>
-                  )}
-                />
-              </div>
+        {errors.id && <small className="p-error ml-8">{errors.id.message}</small>}
+      </div>
+      {fields.map((item: any, index) => {
+        return (
+          <div className="flex flex-col" key={item.id}>
+            <div className="flex flex-row items-center">
+              <Controller
+                name={`translation.${index}.value`}
+                control={control}
+                render={({ field, fieldState }) => (
+                  <>
+                    <label htmlFor="projectName" className="mr-3">
+                      {item.name.toUpperCase()}:
+                    </label>
+                    <InputText
+                      id={field.name}
+                      {...field}
+                      autoFocus
+                      value={field.value}
+                      className={`mr-3 w-72 h-10 my-2 ${
+                        fieldState.invalid && fieldState.isTouched && 'border-red-400'
+                      }`}
+                    />
+                    <img
+                      className="h-5 my-auto cursor-pointer"
+                      alt=""
+                      src={googleTranslateIcon}
+                      onClick={(e) => onTranslateClickHandler(item.name, field.name)}
+                    />
+                  </>
+                )}
+              />
             </div>
-          );
-        })}
-      </Dialog>
-    </>
+          </div>
+        );
+      })}
+    </Dialog>
   );
-};
+}
 
 export default TranslationDialog;

@@ -46,31 +46,16 @@ function ProjectList({ history }: any | HashRouter) {
     history.push('/editor');
   }
 
-  const contextMenuItems = [
-    {
-      label: 'Open',
-      command: onProjectOpen
-    },
-    {
-      label: 'Edit project',
-      command: onProjectEdit
-    },
-    {
-      label: 'Remove',
-      command: onProjectRemove
-    }
-  ];
-
-  function onProjectEdit(e: any) {
+  function onProjectEdit() {
     setProjectDialogType(ProjectDialogEnum.edit);
     setDisplayDialog(true);
   }
 
-  function onProjectRemove(e: any) {
+  function onProjectRemove() {
     if (currentItem) dispatch(removeProject(currentItem));
   }
 
-  function onItemContextMenuClickHide(e: any) {
+  function onItemContextMenuClickHide() {
     setCurrentItem(undefined);
   }
 
@@ -89,9 +74,25 @@ function ProjectList({ history }: any | HashRouter) {
     dispatch(toggleProjectPin(index));
   }
 
+  const contextMenuItems = [
+    {
+      label: 'Open',
+      command: onProjectOpen
+    },
+    {
+      label: 'Edit project',
+      command: onProjectEdit
+    },
+    {
+      label: 'Remove',
+      command: onProjectRemove
+    }
+  ];
+
   const projectItemRenderer = (project: Project, key: number) => (
     <React.Fragment key={key}>
       <div className="flex flex-row w-full justify-between">
+        {/* To fix ts error https://dev.to/receter/easy-accessible-click-handlers-4jkb */}
         <div
           onClick={(e) => onProjectOpen(e, key)}
           onContextMenu={(e) => onContextMenuShow(e, project)}
@@ -106,7 +107,7 @@ function ProjectList({ history }: any | HashRouter) {
         <img
           className="hover: transform h-6 my-auto hover:scale-125 cursor-pointer"
           alt="pin"
-          onClick={(e) => onProjectPinClick(key)}
+          onClick={() => onProjectPinClick(key)}
           src={project.isPinned ? pinFilled : pin}
         />
       </div>
@@ -116,7 +117,7 @@ function ProjectList({ history }: any | HashRouter) {
   return (
     <>
       <button
-        onClick={(e) => setDisplayDialog(true)}
+        onClick={() => setDisplayDialog(true)}
         className="px-4 py-2 dark:text-white bg-queenBlue hover:bg-queenBlueHover rounded-md shadow-md hover:shadow-lg"
       >
         Add new project
@@ -141,7 +142,7 @@ function ProjectList({ history }: any | HashRouter) {
         model={contextMenuItems}
         ref={contextMenuRef}
         onHide={onItemContextMenuClickHide}
-      ></ContextMenu>
+      />
       {projects.map((project: Project, key: number) => projectItemRenderer(project, key))}
       {projects.length < 1 && <span className="text-gray-200 ml-3">Project list is empty!</span>}
     </>

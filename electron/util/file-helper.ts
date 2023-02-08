@@ -10,7 +10,7 @@ let APP_CONFIG_ROOT_PATH_CONFIG: string;
 function checkIfConfigFileExists() {
   if (!APP_CONFIG_ROOT_PATH_CONFIG) {
     const APP_CONFIG_ROOT_PATH = app.getPath('userData');
-    APP_CONFIG_ROOT_PATH_CONFIG = APP_CONFIG_ROOT_PATH + 'config.json';
+    APP_CONFIG_ROOT_PATH_CONFIG = `${APP_CONFIG_ROOT_PATH}config.json`;
   }
 }
 
@@ -23,7 +23,7 @@ export function writeAppSettings(_event: Electron.IpcMainEvent, args: any[]) {
 export function readAppSettings(): Settings {
   checkIfConfigFileExists();
   const rawData = fs.readFileSync(APP_CONFIG_ROOT_PATH_CONFIG);
-  let loadedData = JSON.parse(rawData.toString());
+  const loadedData = JSON.parse(rawData.toString());
   return loadedData;
 }
 
@@ -49,7 +49,7 @@ export function readDirectoryTree(path: string, ignoredDirectory: string[]): Tre
         withFileTypes: true
       });
 
-      for (let child of children) {
+      for (const child of children) {
         const childPath = `${currentNode.path}/${child.name}`;
         const childNode = new TreeNode(childPath, child.name, child.isDirectory());
 
@@ -71,10 +71,10 @@ export function readDirectoryTree(path: string, ignoredDirectory: string[]): Tre
 
 export function readTranslationsInVueType(url: string): object[] {
   const rawData = fs.readFileSync(url);
-  let loadedData = rawData.toString();
-  let vueI18nRegex = /\$t([^\)]+\))/g;
+  const loadedData = rawData.toString();
+  const vueI18nRegex = /\$t([^\)]+\))/g;
   let match;
-  let foundTranslations = [];
+  const foundTranslations = [];
   while ((match = vueI18nRegex.exec(loadedData))) {
     foundTranslations.push({
       name: match[0].substring(match[0].indexOf('"') + 1, match[0].lastIndexOf('"')),
@@ -99,7 +99,7 @@ export function readTranslations(url: string): Translation {
     // @ts-ignore
     for (const [key, translation] of Object.entries(translations)) {
       if (loadedTranslations[key]) {
-        loadedTranslations[key][lng] = translation as String;
+        loadedTranslations[key][lng] = translation as string;
       } else {
         loadedTranslations[key] = {
           [lng]: translation
@@ -111,7 +111,7 @@ export function readTranslations(url: string): Translation {
 }
 
 export function writeTranslations(url: string, translations: Translation) {
-  let fileTranslations = {};
+  const fileTranslations = {};
   for (const [id, txs] of Object.entries(translations)) {
     for (const [lang, translation] of Object.entries(txs)) {
       // @ts-ignore
@@ -127,7 +127,7 @@ export function writeTranslations(url: string, translations: Translation) {
   for (const [langName, txs] of Object.entries(fileTranslations)) {
     // @ts-ignore
     const unflattenTranslations = unflatten(txs);
-    const fileName = path.join(url, langName + '.json');
+    const fileName = path.join(url, `${langName}.json`);
     fs.writeFileSync(fileName, JSON.stringify(unflattenTranslations, null, 2));
   }
 }
@@ -137,5 +137,5 @@ export interface Translation {
 }
 
 type Object = {
-  [key: string]: String;
+  [key: string]: string;
 };

@@ -1,3 +1,6 @@
+import { isEmpty } from 'lodash';
+import { Toast } from 'primereact/toast';
+import { MutableRefObject, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   setShowEditDialog,
@@ -7,10 +10,7 @@ import {
   saveTranslations,
   resetTranslationData
 } from '../../../../redux/slices/filesSlice';
-import { isEmpty } from 'lodash';
 import TranslationDialogEnum from '../../../../core/enums/TranslationDialogEnum';
-import { Toast } from 'primereact/toast';
-import { MutableRefObject, useRef } from 'react';
 
 function TranslationEditorCommand() {
   const toast = useRef() as MutableRefObject<Toast>;

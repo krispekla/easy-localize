@@ -1,6 +1,7 @@
 import { Dropdown } from 'primereact/dropdown';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { setSelectedTranslation } from '../../../../redux/slices/filesSlice';
+
 function FileEditorCommand() {
   const selectedTranslation = useAppSelector((state) => state.files.selectedTranslation);
   const selectedTranslationInFile = useAppSelector((state) => state.files.selectedFileTranslation);

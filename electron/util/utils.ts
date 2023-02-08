@@ -21,14 +21,14 @@ export function flatten(data: any) {
       result[prop] = cur;
     } else if (Array.isArray(cur)) {
       for (let i = 0; i < cur.length; i++) {
-        recurse(cur[i], prop ? prop + '.' + i : '' + i);
+        recurse(cur[i], prop ? `${prop}.${i}` : `${i}`);
       }
       if (cur.length === 0) result[prop] = [];
     } else {
       let isEmpty = true;
       for (const p in cur) {
         isEmpty = false;
-        recurse(cur[p], prop ? prop + '.' + p : p);
+        recurse(cur[p], prop ? `${prop}.${p}` : p);
       }
       if (isEmpty) result[prop] = {};
     }

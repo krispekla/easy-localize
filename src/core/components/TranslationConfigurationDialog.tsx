@@ -4,15 +4,16 @@ import { InputText } from 'primereact/inputtext';
 import { useForm, Controller } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { setGoogleApiKey } from '../../redux/slices/settingsSlice';
+
 export interface TranslationConfigurationDialogInterface {
   displayDialog: boolean;
   setDisplayDialog: any;
 }
 
-const TranslationConfigurationDialog = (props: TranslationConfigurationDialogInterface) => {
+function TranslationConfigurationDialog(props: TranslationConfigurationDialogInterface) {
   const dispatch = useAppDispatch();
   const apiKey: string = useAppSelector((state) => state.settings.googleApiKey);
-  let formDefaultValues: { apiKey: string } = {
+  const formDefaultValues: { apiKey: string } = {
     apiKey: ''
   };
 
@@ -61,40 +62,38 @@ const TranslationConfigurationDialog = (props: TranslationConfigurationDialogInt
   };
 
   return (
-    <>
-      <Dialog
-        header={`Translation configuration`}
-        visible={props.displayDialog}
-        style={{ maxWidth: '450px', width: '100%' }}
-        draggable={false}
-        footer={renderDialogAddNewFooter()}
-        onHide={() => onHideDialog()}
-      >
-        <div className="flex d-col">
-          <div className="flex flex-col">
-            <label htmlFor="projectName">Google API key:</label>
-            <Controller
-              name="apiKey"
-              control={control}
-              rules={{ required: 'Key is required' }}
-              render={({ field, fieldState }) => (
-                <InputText
-                  id={field.name}
-                  {...field}
-                  autoFocus
-                  value={field.value}
-                  className={`mr-3 w-72 h-10 my-2 ${
-                    fieldState.invalid && fieldState.isTouched && 'border-red-400'
-                  }`}
-                />
-              )}
-            />
-            {errors['apiKey'] && <small className="p-error">{errors['apiKey'].message}</small>}
-          </div>
+    <Dialog
+      header="Translation configuration"
+      visible={props.displayDialog}
+      style={{ maxWidth: '450px', width: '100%' }}
+      draggable={false}
+      footer={renderDialogAddNewFooter()}
+      onHide={() => onHideDialog()}
+    >
+      <div className="flex d-col">
+        <div className="flex flex-col">
+          <label htmlFor="projectName">Google API key:</label>
+          <Controller
+            name="apiKey"
+            control={control}
+            rules={{ required: 'Key is required' }}
+            render={({ field, fieldState }) => (
+              <InputText
+                id={field.name}
+                {...field}
+                autoFocus
+                value={field.value}
+                className={`mr-3 w-72 h-10 my-2 ${
+                  fieldState.invalid && fieldState.isTouched && 'border-red-400'
+                }`}
+              />
+            )}
+          />
+          {errors.apiKey && <small className="p-error">{errors.apiKey.message}</small>}
         </div>
-      </Dialog>
-    </>
+      </div>
+    </Dialog>
   );
-};
+}
 
 export default TranslationConfigurationDialog;

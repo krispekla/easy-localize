@@ -23,7 +23,7 @@ function FileTree() {
     }
   }
 
-  const FileRenderer = (node: TreeNode) => {
+  function FileRenderer(node: TreeNode) {
     const hasChildren = node?.children && node.isExpanded;
 
     return (
@@ -44,7 +44,7 @@ function FileTree() {
           </span>
           {/* @ts-ignore */}
           {node.translations.some((x) => x.name === selectedTranslation.id) ? (
-            <i className="pi pi-circle-fill ml-auto mr-4"></i>
+            <i className="pi pi-circle-fill ml-auto mr-4" />
           ) : (
             ''
           )}
@@ -54,7 +54,7 @@ function FileTree() {
         </div>
       </>
     );
-  };
+  }
 
   return (
     <section className="flex flex-col pl-3 pt-2">

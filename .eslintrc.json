@@ -21,6 +21,15 @@
   },
   "plugins": ["react", "@typescript-eslint", "prettier"],
   "rules": {
+    "no-param-reassign": [
+      "error",
+      {
+        "props": true,
+        "ignorePropertyModificationsFor": ["state"]
+      }
+    ],
+    "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
+    "@typescript-eslint/ban-ts-comment": "off",
     // Prettier
     "prettier/prettier": "error",
     // Typescript
@@ -35,6 +44,8 @@
     "react/button-has-type": 0,
     "react/no-children-prop": 0,
     "react/jsx-props-no-spreading": 0,
+    "react/jsx-uses-react": "off",
+    "react/react-in-jsx-scope": "off",
     "react/function-component-definition": [
       "warn",
       {

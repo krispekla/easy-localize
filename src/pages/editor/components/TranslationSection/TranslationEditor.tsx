@@ -2,12 +2,12 @@ import { useCallback, useEffect, useRef, MutableRefObject } from 'react';
 import './TranslationEditor.scss';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import { ContextMenu } from 'primereact/contextmenu';
+import { cloneDeep, isEmpty } from 'lodash';
 import { Language } from '../../../../core/interfaces/LanguageInterface';
 import { Translation } from '../../../../core/interfaces/TranslationInterface';
-import { ContextMenu } from 'primereact/contextmenu';
 import TranslationDialogEnum from '../../../../core/enums/TranslationDialogEnum';
 import TranslationDialog from './TranslationDialog';
-import { cloneDeep, isEmpty } from 'lodash';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   setTranslationData,
@@ -35,7 +35,7 @@ function TranslationEditor() {
     if (!translations) return dispatch(setTranslationData([]));
     const filledTranslations = [];
     for (const [key, value] of Object.entries(translations)) {
-      const temp: { [key: string]: String } = {
+      const temp: { [key: string]: string } = {
         id: key
       };
       for (const [lng, translation] of Object.entries(value)) {
@@ -59,7 +59,7 @@ function TranslationEditor() {
 
   const languages: Language[] = useAppSelector((state) => {
     const languages = [...state.settings.projects[state.settings.currentProject].languages];
-    const defaultLanguage = state.settings.projects[state.settings.currentProject].defaultLanguage;
+    const { defaultLanguage } = state.settings.projects[state.settings.currentProject];
     if (!languages) {
       return [];
     }
@@ -100,10 +100,10 @@ function TranslationEditor() {
       style={{ width: '320px' }}
       field={item.alpha2}
       header={`${item.language} (${item.alpha2})`}
-    ></Column>
+    />
   ));
 
-  const onTranslationUpdate = (translation: { [key: string]: String }) => {
+  const onTranslationUpdate = (translation: { [key: string]: string }) => {
     const translations = cloneDeep(translationData);
     if (translationDialogType === TranslationDialogEnum.add) {
       translations.push(translation);

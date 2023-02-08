@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { HashRouterProps, withRouter } from 'react-router-dom';
+import { SelectButton } from 'primereact/selectbutton';
 import FileEditor from './components/FileEditorSection/FileEditor';
 import FileTree from './components/FileEditorSection/FileTree';
 import ProjectCommands from './components/ProjectCommands';
@@ -11,7 +12,6 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { TreeNode } from '../../core/interfaces/TreeNodeInterface';
 import { setFiles, setFileTranslations, setTranslations } from '../../redux/slices/filesSlice';
 import FileEditorCommand from './components/CommandSection/FileEditorCommand';
-import { SelectButton } from 'primereact/selectbutton';
 import TranslationEditorCommand from './components/CommandSection/TranslationEditorCommand';
 import TranslationEditor from './components/TranslationSection/TranslationEditor';
 import { Translation } from '../../core/interfaces/TranslationInterface';
@@ -102,10 +102,10 @@ function Editor({ history }: any | HashRouterProps) {
                 <SplitterPanel className="" size={70}>
                   {/* <FileEditor />  */}
                   <div className={modeToggle === 'editor' ? 'hidden' : 'block'}>
-                    {<TranslationEditor />}
+                    <TranslationEditor />
                   </div>
                   <div className={modeToggle === 'editor' ? 'block' : 'hidden'}>
-                    {<FileEditor />}
+                    <FileEditor />
                   </div>
                 </SplitterPanel>
                 <SplitterPanel className="" size={30}>

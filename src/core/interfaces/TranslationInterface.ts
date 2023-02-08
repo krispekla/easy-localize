@@ -3,5 +3,5 @@ export type Translation = {
 };
 
 type Object = {
-  [key: string]: String;
+  [key: string]: string;
 };
