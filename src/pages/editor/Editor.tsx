@@ -50,7 +50,7 @@ function Editor({ history }: any | HashRouterProps) {
       window.electron.removeAllListeners('read-directory-tree-return');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [currentProject]);
 
   function loadFileTree() {
     if (window.electron) {
@@ -67,7 +67,8 @@ function Editor({ history }: any | HashRouterProps) {
     if (window.electron) {
       window.electron.send('read-translation-files', {
         path: currentProject.translationFolder,
-        defaultLanguage: currentProject.defaultLanguage
+        defaultLanguage: currentProject.defaultLanguage,
+        languages: currentProject.languages
       });
     }
   }
