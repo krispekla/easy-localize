@@ -4,6 +4,7 @@ import { Settings } from '../types/interfaces/SettingsInterface';
 import TreeNode from '../types/interfaces/TreeNode';
 import { flatten, unflatten } from './utils';
 import app from '../index';
+import { Language } from '../types/interfaces/LanguageInterface';
 
 let APP_CONFIG_ROOT_PATH_CONFIG: string;
 
@@ -108,6 +109,19 @@ export function readTranslations(url: string): Translation {
     }
   }
   return loadedTranslations;
+}
+
+export function addMissingLanguagesToTranslations(
+  translations: Translation,
+  languages: Language[]
+) {
+  for (const [_, txs] of Object.entries(translations)) {
+    for (const lang of languages) {
+      if (!txs[lang.alpha2]) {
+        txs[lang.alpha2] = '';
+      }
+    }
+  }
 }
 
 export function writeTranslations(url: string, translations: Translation) {

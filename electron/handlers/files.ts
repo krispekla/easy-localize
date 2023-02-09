@@ -3,9 +3,11 @@ import {
   readDirectoryTree,
   readTranslations,
   writeTranslations,
-  Translation
+  Translation,
+  addMissingLanguagesToTranslations
 } from '../util/file-helper';
 import TreeNode from '../types/interfaces/TreeNode';
+import { Language } from '../types/interfaces/LanguageInterface';
 
 function readDirectoryTreeHandler(
   event: Electron.IpcMainEvent,
@@ -20,8 +22,12 @@ function readFileHandler(event: Electron.IpcMainEvent, { path }: { path: string 
   event.sender.send('read-file-return', loadedFile);
 }
 
-function readTranslationsHandler(event: Electron.IpcMainEvent, { path }: { path: string }) {
+function readTranslationsHandler(
+  event: Electron.IpcMainEvent,
+  { path, languages }: { path: string; languages: Language[] }
+) {
   const translations: Translation = readTranslations(path);
+  addMissingLanguagesToTranslations(translations, languages);
   event.sender.send('read-translation-files-return', translations);
 }
 
