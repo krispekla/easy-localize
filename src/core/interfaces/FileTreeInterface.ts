@@ -14,4 +14,5 @@ export type FileTreeInterface = {
   showEditDialog: boolean;
   translationDialogType: TranslationDialogEnum;
   exportCsv: boolean;
+  modeToggle: 'translations' | 'editor';
 };

@@ -5,7 +5,11 @@ import { TreeNode } from '../../../../core/interfaces/TreeNodeInterface';
 import fileIcon from '../../../../assets/icons/file.svg';
 import folderIcon from '../../../../assets/icons/folder.svg';
 import folderOpenedIcon from '../../../../assets/icons/folder-opened.svg';
-import { setActiveFile, setIsExpandedOnDirectoryNode } from '../../../../redux/slices/filesSlice';
+import {
+  setActiveFile,
+  setModeToggle,
+  setIsExpandedOnDirectoryNode
+} from '../../../../redux/slices/filesSlice';
 
 function FileTree() {
   const fileTree = useAppSelector((state) => state.files.tree);
@@ -17,6 +21,7 @@ function FileTree() {
     if (node.isDirectory && fileTree?.children) {
       dispatch(setIsExpandedOnDirectoryNode(node));
     } else {
+      dispatch(setModeToggle('editor'));
       if (node.name === activeFile?.name) return;
 
       dispatch(setActiveFile(node));

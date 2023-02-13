@@ -10,14 +10,19 @@ import { Splitter, SplitterPanel } from 'primereact/splitter';
 import { Project } from '../../core/interfaces/ProjectInterface';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { TreeNode } from '../../core/interfaces/TreeNodeInterface';
-import { setFiles, setFileTranslations, setTranslations } from '../../redux/slices/filesSlice';
+import {
+  setFiles,
+  setFileTranslations,
+  setModeToggle,
+  setTranslations
+} from '../../redux/slices/filesSlice';
 import FileEditorCommand from './components/CommandSection/FileEditorCommand';
 import TranslationEditorCommand from './components/CommandSection/TranslationEditorCommand';
 import TranslationEditor from './components/TranslationSection/TranslationEditor';
 import { Translation } from '../../core/interfaces/TranslationInterface';
 
 function Editor({ history }: any | HashRouterProps) {
-  const [modeToggle, setModeToggle] = useState('translations');
+  const modeToggle = useAppSelector((state) => state.files.modeToggle);
   const currentProject: Project = useAppSelector(
     (state) => state.settings.projects[state.settings.currentProject]
   );
@@ -87,7 +92,7 @@ function Editor({ history }: any | HashRouterProps) {
               value={modeToggle}
               options={toggleModeOptions}
               unselectable={false}
-              onChange={(e) => setModeToggle(e.value)}
+              onChange={(e) => dispatch(setModeToggle(e.value))}
             />
           </div>
         </header>

@@ -16,7 +16,8 @@ const initialState: FileTreeInterface = {
   updatedIds: [],
   showEditDialog: false,
   translationDialogType: TranslationDialogEnum.add,
-  exportCsv: false
+  exportCsv: false,
+  modeToggle: 'translations'
 };
 
 function readAllTranslationsFromTree(node: TreeNode, acumulator: Record<string, unknown>): any {
@@ -81,6 +82,9 @@ const filesSlice = createSlice({
     },
     setTranslations(state, action: PayloadAction<Translation>) {
       state.translations = action.payload;
+    },
+    setModeToggle(state, action: PayloadAction<boolean>) {
+      state.modeToggle = action.payload;
     },
     setTranslationData(state, action: PayloadAction<any[]>) {
       state.translationData = action.payload;
@@ -158,6 +162,7 @@ export const {
   setTranslations,
   setTranslationData,
   setUpdatedIds,
+  setModeToggle,
   setSelectedTranslation,
   setSelectedFileTranslation,
   setShowEditDialog,
