@@ -1,37 +1,66 @@
-# Vite + React + Typescript + Electron - Starter
+# Easy Localize
 
-![Vite + React + Typescript + Tailwind + Electron Starter](Screenshot.jpg)
+A desktop application that helps developers manage their translation files efficiently.
 
-> It is a simple starter template without unnecessary packages.
+## What it does
 
-This very simple Starter template, utilizes [Vite](https://github.com/vitejs/vite), [Tailwind](https://tailwindcss.com/), [React](https://reactjs.org/), [Typescript](https://www.typescriptlang.org/) and [Electron](https://electronjs.org/).
+Easy Localize is an Electron-based tool designed to simplify the process of managing translations in software projects. It provides an intuitive interface for:
 
-By default, the React framework is used for the interface, but you can easily use any other framework such as Vue, Preact, Angular, Svelte or anything else.
+- Managing multiple translation projects
+- Editing translation files across different languages
+- Browsing project file structures
+- Organizing and maintaining localization files
+- Integration with Google Cloud Translate API for automatic translations
 
-> Vite is framework agnostic
+## Technologies
 
-## Installation
+- **Electron** - Desktop application framework
+- **React** - UI library
+- **TypeScript** - Type-safe JavaScript
+- **Vite** - Build tool and development server
+- **Redux Toolkit** - State management
+- **PrimeReact** - UI component library
+- **Tailwind CSS** - Styling
+- **Google Cloud Translate** - Translation API integration
 
-Clone this repo and install all dependencies  
-`yarn` or `npm install`
+## Getting Started
 
-## Development
+### Prerequisites
 
-`yarn dev` or `npm run dev`
+- Node.js and npm/yarn installed
 
-## Build
+### Installation
 
-`yarn build` or `npm run build`
+```bash
+# Install dependencies
+yarn
+# or
+npm install
+```
 
-## Publish
+### Development
 
-`yarn dist` or `npm run dist`
+```bash
+# Run in development mode
+yarn dev
+# or
+npm run dev
+```
 
-## More advanced templates  
+### Build
 
-If you are looking for more advanced templates than this, please go to one of the following links (these are some other links out of the **[awesome-vite](https://github.com/vitejs/awesome-vite)** repo) or you can help me make this template better 🙂  
+```bash
+# Build the application
+yarn build
+# or
+npm run build
+```
 
-Links: 
-- [vite-react-electron](https://github.com/caoxiemeihao/vite-react-electron)
-- [electron-vite-react](https://github.com/twstyled/electron-vite-react)
-- [vite-electron-esbuild-starter](https://github.com/jctaoo/vite-electron-esbuild-starter)
+### Package
+
+```bash
+# Create distributable package
+yarn dist
+# or
+npm run dist
+```
